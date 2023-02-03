@@ -36,11 +36,26 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     Tree_Script tree;
 
+    [Header("Enemy Settings")]
+    [SerializeField]
+    private EnemySpawner_Script spawner;
+    [SerializeField]
+    private float timerBetweenEnemy = 5f;
+    [SerializeField]
+    private float timeRemainingBeforeNewEnemy = 10f;
 
 
     [Header("Debug")]
     [SerializeField, Range(1, 100)]
     private float debugTime = 1f;
+
+
+    [Header("Win/Lose Condition")]
+    private bool lose = false;
+
+
+
+
     void Start() {
     }
 
@@ -58,14 +73,32 @@ public class GameManager : MonoBehaviour
         return ret;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        Time.timeScale = debugTime;
+    private void Lose() {
+        lose = false;
+    }
+    public void Attacked(float value) {
+        currentSap -= value;
+        if(currentSap <= 0) {
+            Lose();
+        }
+    }
 
 
-        elapsedTime += Time.deltaTime;
-        //State Managment
+
+
+    private void ActualizeTree(float deltaTime) {
+        float treeGrowthPercent = Mathf.InverseLerp(timeBeforeSapling, timeBeforeFullGrown, elapsedTime);
+        tree.SetSize(treeGrowthPercent);
+
+        //Sap Gain
+        currentSap += sapPerSecond * deltaTime;
+        if (currentSap > maxSap) {
+            currentSap = maxSap;
+        }
+        sapVisual.ChangeValue(currentSap, maxSap);
+        sapVisual.PreviewCost(nextCost, maxSap, currentSap >= nextCost);
+    }
+    private void ActualizeState() {
         switch (actualState) {
             case GameState.Seed:
                 if (elapsedTime > timeBeforeSapling) {
@@ -91,18 +124,32 @@ public class GameManager : MonoBehaviour
             default:
                 break;
         }
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        if (lose) {
+            return;
+        }
+        Time.timeScale = debugTime;
 
+
+        elapsedTime += Time.deltaTime;
+        //State Managment
+        ActualizeState();
 
         //Actualize Tree
-        float treeGrowthPercent = Mathf.InverseLerp(timeBeforeSapling, timeBeforeFullGrown, elapsedTime);
-        tree.SetSize(treeGrowthPercent);
+        ActualizeTree(Time.deltaTime);
 
-        //Sap Gain
-        currentSap += sapPerSecond * Time.deltaTime;
-        if (currentSap > maxSap) {
-            currentSap = maxSap;
+        //EnemySpawn
+        EnemySpawn(Time.deltaTime);
+    }
+
+    private void EnemySpawn(float deltaTime) {
+        timeRemainingBeforeNewEnemy -= deltaTime;
+        if(timeRemainingBeforeNewEnemy <= 0) {
+            spawner.SpawnAnEnemy(this, actualState);
+            timeRemainingBeforeNewEnemy = timerBetweenEnemy;
         }
-        sapVisual.ChangeValue(currentSap, maxSap);
-        sapVisual.PreviewCost(nextCost, maxSap,currentSap >= nextCost);
     }
 }

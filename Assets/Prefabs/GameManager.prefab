@@ -53,4 +53,7 @@ MonoBehaviour:
   sapPerSecond: 1
   nextCost: 0
   tree: {fileID: 0}
+  spawner: {fileID: 0}
+  timerBetweenEnemy: 5
+  timeRemainingBeforeNewEnemy: 30
   debugTime: 1

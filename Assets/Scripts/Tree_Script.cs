@@ -12,7 +12,7 @@ public class Tree_Script : MonoBehaviour {
     [SerializeField]
     private LineRenderer lr;
         
-
+    
     [SerializeField]
     private Transform leavesParent;
 
