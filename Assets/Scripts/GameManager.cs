@@ -8,7 +8,7 @@ public enum GameState { Seed, Sapling, YoungTree, OldTree, FullGrown }
 public class GameManager : MonoBehaviour
 {
     private float elapsedTime = 0f;
-
+    [Header("GameState changing")]
     [SerializeField]
     private float timeBeforeSapling = 10f;
     [SerializeField]
@@ -20,15 +20,50 @@ public class GameManager : MonoBehaviour
 
     private GameState actualState = GameState.Seed;
 
+
+    [Header("Sap attributes")]
+    [SerializeField]
+    SapVisual_Script sapVisual;
+    private float currentSap = 0f;
+    [SerializeField]
+    private float maxSap = 50f;
+    [SerializeField]
+    private float sapPerSecond = 1f;
+
+    public float nextCost = 0;
+
+    [Header("Tree")]
     [SerializeField]
     Tree_Script tree;
 
+
+
+    [Header("Debug")]
+    [SerializeField, Range(1, 100)]
+    private float debugTime = 1f;
     void Start() {
-        Time.timeScale = 20;    
     }
+
+    public bool CanBuy(float sapCost) {
+        if (currentSap > sapCost) {
+            return true;
+        }
+        return false;
+    }
+    public bool Buy(float sapCost) {
+        bool ret = CanBuy(sapCost);
+        if (ret) {
+            currentSap -= sapCost;
+        }
+        return ret;
+    }
+
     // Update is called once per frame
     void Update()
     {
+        Time.timeScale = debugTime;
+
+
         elapsedTime += Time.deltaTime;
         //State Managment
         switch (actualState) {
@@ -59,8 +94,15 @@ public class GameManager : MonoBehaviour
 
 
         //Actualize Tree
-        float percent = Mathf.InverseLerp(timeBeforeSapling, timeBeforeFullGrown, elapsedTime);
-        tree.SetSize(percent);
+        float treeGrowthPercent = Mathf.InverseLerp(timeBeforeSapling, timeBeforeFullGrown, elapsedTime);
+        tree.SetSize(treeGrowthPercent);
 
+        //Sap Gain
+        currentSap += sapPerSecond * Time.deltaTime;
+        if (currentSap > maxSap) {
+            currentSap = maxSap;
+        }
+        sapVisual.ChangeValue(currentSap, maxSap);
+        sapVisual.PreviewCost(nextCost, maxSap,currentSap >= nextCost);
     }
 }
