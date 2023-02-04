@@ -12,8 +12,6 @@ public class WaterPocketBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        print("yup");
-
         float angle = 0;
 
         var ssc = GetComponent<SpriteShapeController>();

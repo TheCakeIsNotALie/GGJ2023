@@ -8,6 +8,7 @@ TagManager:
   - Roots
   - Enemy
   - Projectile
+  - WaterPocket
   layers:
   - Default
   - TransparentFX

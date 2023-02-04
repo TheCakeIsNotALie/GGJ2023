@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6132083296465062938}
   - component: {fileID: 6132083296465062933}
   m_Layer: 0
-  m_Name: RootNodePrefab
+  m_Name: SnapPointPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

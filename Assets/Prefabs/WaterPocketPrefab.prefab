@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 1056417996044514534}
   - component: {fileID: 1056417996044514529}
   - component: {fileID: 6936154661283355962}
+  - component: {fileID: 3406689833266857140}
   m_Layer: 0
   m_Name: WaterPocketPrefab
-  m_TagString: Untagged
+  m_TagString: WaterPocket
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -75,7 +76,7 @@ SpriteShapeRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Color: {r: 0.6415094, g: 0.23199005, b: 0, a: 1}
   m_MaskInteraction: 0
   m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
@@ -155,8 +156,8 @@ MonoBehaviour:
   m_StretchUV: 0
   m_WorldSpaceUV: 0
   m_CornerAngleThreshold: 30.3
-  m_ColliderDetail: 16
-  m_ColliderOffset: 0.5
+  m_ColliderDetail: 8
+  m_ColliderOffset: 0.436
   m_UpdateCollider: 1
   m_OptimizeCollider: 1
   m_OptimizeGeometry: 1
@@ -178,3 +179,51 @@ MonoBehaviour:
   segments: 0
   width: 0
   height: 0
+--- !u!60 &3406689833266857140
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1056417996044514528}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -1.2079462, y: -1.1012399}
+      - {x: -1.7720586, y: -0.68140155}
+      - {x: -2.0805714, y: -0.35972035}
+      - {x: -2.3808608, y: 0.103534386}
+      - {x: -2.497325, y: 0.4188391}
+      - {x: -2.4460802, y: 0.8483449}
+      - {x: -2.121377, y: 1.1810848}
+      - {x: -1.503475, y: 1.439923}
+      - {x: -0.89195466, y: 1.6092242}
+      - {x: 0.053083256, y: 1.74491}
+      - {x: 0.59933245, y: 1.7723523}
+      - {x: 1.2552716, y: 1.709624}
+      - {x: 1.8271936, y: 1.4998971}
+      - {x: 2.192759, y: 1.1018229}
+      - {x: 2.287223, y: 0.5242084}
+      - {x: 2.117035, y: -0.13065617}
+      - {x: 1.8570131, y: -0.53318274}
+      - {x: 1.3762025, y: -1.0160564}
+      - {x: 0.80948544, y: -1.297696}
+      - {x: 0.114396535, y: -1.3611202}
+      - {x: -0.6727185, y: -1.271014}
+      - {x: -0.9333324, y: -1.2071754}
+      - {x: -1.2079462, y: -1.1012399}

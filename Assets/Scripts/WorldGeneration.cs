@@ -12,10 +12,13 @@ public class WorldGeneration : MonoBehaviour
     public float zPosition;
 
     List<KeyValuePair<float, Vector3>> spawns = new List<KeyValuePair<float, Vector3>>();
-    List<GameObject> waterPocketList = new List<GameObject>();
+    public List<GameObject> waterPocketList = new List<GameObject>();
+
+    private RootTree rootTree;
     // Start is called before the first frame update
     void Start()
     {
+        rootTree = GetComponent<RootTree>();
         for (int i = 0; i < numberOfPockets; i++)
         {
             var waterPocket = Instantiate(waterPocketPrefab);
@@ -56,7 +59,7 @@ public class WorldGeneration : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     void SpawnWaterPocket()
