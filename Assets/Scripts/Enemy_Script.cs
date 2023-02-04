@@ -18,6 +18,7 @@ public class Enemy_Script : MonoBehaviour
     private GameManager target;
 
     private EnemyState state = EnemyState.WaitingOrder;
+    public EnemyState State { get => state; }
 
     private bool hasEnemy = false;
     private bool hasTarget = false;
@@ -39,10 +40,18 @@ public class Enemy_Script : MonoBehaviour
         hasTarget = true;
     }
 
+    public Vector2 GetVelocity() {
+        if(rb == null) {
+            rb = GetComponent<Rigidbody2D>();
+        }
+        return rb.velocity;
+    }
+
     public void ReceiveDamage(float value) {
         currentPv -= value;
         if(currentPv <= 0) {
             rb.velocity = Vector2.zero;
+            GetComponent<Collider2D>().enabled = false;
             state = EnemyState.Dying;
         }
     }
@@ -97,6 +106,9 @@ public class Enemy_Script : MonoBehaviour
                 }
                 break;
             case EnemyState.Dying:
+                target.enemies.Remove(this);
+                Destroy(gameObject);
+                break;
             default:
                 break;
         }
