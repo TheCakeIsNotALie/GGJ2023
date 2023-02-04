@@ -16,7 +16,7 @@ public class IconShower_Script : MonoBehaviour
     private void Start() {
     }
     public void CanAfford(bool affordable) {
-        filter.SetActive(!affordable || !GameManager.instance.HasSpaceForDefense());
+        filter.SetActive(!affordable || GameManager.instance.HasSpaceForDefense() == -1);
     }
     public void SetValue(int value) {
         valueText.text = string.Format("{0}", value);

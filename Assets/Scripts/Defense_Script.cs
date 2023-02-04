@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,17 +12,36 @@ public class Defense_Script : MonoBehaviour
     private SpriteRenderer sr;
     private float currentTimerBeforeAttack = 0f;
 
+    public int defensePosition = -1;
+
 
     [SerializeField]
     private GameObject prefabProjectile;
     private Enemy_Script target = null;
 
-    public void SetDefenseStats(DefenseStats def) {
+    public void SetDefenseStats(DefenseStats def,int position) {
         if(sr == null) sr = GetComponent<SpriteRenderer>();
+        defensePosition = position;
         defensesStats = def;
         sr.sprite = def.image;
         currentTimerBeforeAttack = def.timeBetweenAttacks;
     }
+
+    public DefenseStats GetDefenseStats() {
+        return defensesStats;
+    }
+
+    public DefenseStats Upgrade() {
+        if (GameManager.instance.Buy(defensesStats.upgrade.cost)) {
+            DefenseStats newDef = defensesStats.upgrade;
+            print(string.Format("Got from {0} to {1}", defensesStats.name, newDef.name));
+
+            SetDefenseStats(newDef,defensePosition);
+            return newDef;
+        }
+        return defensesStats;
+    }
+
     // Start is called before the first frame update
     void Start()
     {

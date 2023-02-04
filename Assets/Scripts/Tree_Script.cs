@@ -9,6 +9,11 @@ public class Tree_Script : MonoBehaviour {
     private float maxTrunkWidth = 2f;
     [SerializeField]
     private float maxTrunkHeight = 10f;
+
+    [SerializeField]
+    private float minTrunkWidth = 0.1f;
+    [SerializeField]
+    private float minTrunkHeight = 0.5f;
     [SerializeField]
     private LineRenderer lr;
         

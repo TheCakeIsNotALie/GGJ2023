@@ -1815,6 +1815,8 @@ GameObject:
   - component: {fileID: 2022720783}
   - component: {fileID: 2022720785}
   - component: {fileID: 2022720784}
+  - component: {fileID: 2022720787}
+  - component: {fileID: 2022720786}
   m_Layer: 5
   m_Name: DefenseUpgradeVisual
   m_TagString: Untagged
@@ -1829,7 +1831,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2022720782}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1840,7 +1842,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 10, y: -30}
-  m_SizeDelta: {x: 70, y: 70}
+  m_SizeDelta: {x: 134, y: 326}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2022720784
 MonoBehaviour:
@@ -1880,6 +1882,43 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2022720782}
   m_CullTransparentMesh: 1
+--- !u!114 &2022720786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022720782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 3
+    m_Right: 3
+    m_Top: 3
+    m_Bottom: 3
+  m_ChildAlignment: 0
+  m_StartCorner: 0
+  m_StartAxis: 1
+  m_CellSize: {x: 64, y: 64}
+  m_Spacing: {x: 0, y: 0}
+  m_Constraint: 0
+  m_ConstraintCount: 2
+--- !u!114 &2022720787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022720782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78e6a1cb06bbb494091d56c45213bcb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabIcon: {fileID: 7139388955003994323, guid: 31b83ea3c7740a64a81f661098af0c5b, type: 3}
 --- !u!1 &2079597052
 GameObject:
   m_ObjectHideFlags: 0
@@ -2082,6 +2121,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 20389986}
     - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
+      propertyPath: debugTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
       propertyPath: sapVisual
       value: 
       objectReference: {fileID: 1488837301}
@@ -2090,9 +2133,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1418702575}
     - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
+      propertyPath: sapPerSecond
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
       propertyPath: prefabDefense
       value: 
       objectReference: {fileID: 8345675425231850584, guid: aaddaa060afd1574eb1c8846e1836197, type: 3}
+    - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
+      propertyPath: defenseUpgrade
+      value: 
+      objectReference: {fileID: 2022720787}
     - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
       propertyPath: timerBetweenEnemy
       value: 20
@@ -2103,7 +2154,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
       propertyPath: defensePoints.Array.size
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
       propertyPath: defensePoints.Array.data[0]

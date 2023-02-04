@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c0df0060342e9a40a8167e5bc807465, type: 3}
   m_Name: EcureuilT2
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: 269e3c781a9a45f47b0f5d66bb513c7d, type: 3}
+  icon: {fileID: 21300000, guid: b76f6119b967d0844b2f6da8aa23faf9, type: 3}
   image: {fileID: 21300000, guid: 269e3c781a9a45f47b0f5d66bb513c7d, type: 3}
   name: Ecureuil de combat
   cost: 50

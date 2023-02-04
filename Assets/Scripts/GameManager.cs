@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,8 @@ public class GameManager : MonoBehaviour
     private float timeBeforeOldTree = 300f;
     [SerializeField]
     private float timeBeforeFullGrown = 500f;
+
+
     [SerializeField]
     private GrowthVisual_Script growthVisual;
 
@@ -60,8 +63,10 @@ public class GameManager : MonoBehaviour
     private GameObject prefabDefense;
     [SerializeField]
     private Transform[] defensePoints;
-    private int takenDefensePoints;
+    private GameObject[] defenses;
 
+    [SerializeField]
+    private DefenseUpgradeVisual_Script defenseUpgrade;
 
 
     [Header("Debug")]
@@ -83,6 +88,8 @@ public class GameManager : MonoBehaviour
     void Start() {
         growthVisual.SetTicks(timeBeforeSapling, timeBeforeYoungTree, timeBeforeOldTree, timeBeforeFullGrown);
         growthVisual.SetGrowth(timeElapsedSinceStart, timeBeforeFullGrown);
+        defenses = new GameObject[defensePoints.Length];
+        defenseUpgrade.InitIcons(defensePoints.Length);
     }
 
     public bool CanBuy(float sapCost) {
@@ -98,25 +105,37 @@ public class GameManager : MonoBehaviour
         }
         return ret;
     }
-    public bool HasSpaceForDefense() {
-        return (takenDefensePoints < defensePoints.Length);
+    public int HasSpaceForDefense() {
+        for (int i = 0; i < defenses.Length; i++) {
+            if(defenses[i] == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    public void DeleteDefense(Defense_Script def) {
+        int position = def.defensePosition;
+        Destroy(def.gameObject);
+        defenses[position] = null;
     }
     public bool Buy(DefenseStats defenseStats) {
-        if (!HasSpaceForDefense()) {
+        int id = HasSpaceForDefense();
+        if (id == -1) {
             return false;
         }
         if (!Buy(defenseStats.cost)) {
             return false;
         }
-        PutDefenseAtPoint(defenseStats, takenDefensePoints);
-        takenDefensePoints++;
+        PutDefenseAtPoint(defenseStats, id);
         return true;
     }
     private void PutDefenseAtPoint(DefenseStats def,int id) {
         Transform parent = defensePoints[id];
         GameObject go = Instantiate(prefabDefense, parent);
         Defense_Script defScript = go.GetComponent<Defense_Script>();
-        defScript.SetDefenseStats(def);
+        defScript.SetDefenseStats(def,id);
+        defenses[id] = go;
+        defenseUpgrade.SetSingleAssignedDefense(go, id);
         print("Put defense " + def.name + " At "+id.ToString());
     }
 
