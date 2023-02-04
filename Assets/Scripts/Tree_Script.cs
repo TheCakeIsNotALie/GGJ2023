@@ -32,12 +32,14 @@ public class Tree_Script : MonoBehaviour {
     public void SetSize(float percent) {
 
         //width
-        float curveValue = percent * maxTrunkWidth;
+        float curveValue = (percent * (maxTrunkWidth - minTrunkWidth)) + minTrunkWidth;
         lr.widthMultiplier = curveValue;
-        //length
 
+
+
+        //length
         Vector3[] positions = new Vector3[lr.positionCount];
-        float deltaPos = percent / (lr.positionCount-1) * maxTrunkHeight;
+        float deltaPos = ((percent * (maxTrunkHeight - minTrunkHeight)) + minTrunkHeight) / (lr.positionCount - 1);
         for (int i = 1; i < lr.positionCount; i++) {
             positions[i] = Vector3.up * (i * deltaPos);
         }
@@ -45,6 +47,6 @@ public class Tree_Script : MonoBehaviour {
 
         //leaves
         leavesParent.localScale = Vector3.one * percent;
-        leavesParent.localPosition = Vector3.up * percent * maxTrunkHeight;
+        leavesParent.localPosition = Vector3.up * ((percent * (maxTrunkHeight-minTrunkHeight)) + minTrunkHeight );
     }
 }
