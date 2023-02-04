@@ -1,22 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class RootController : MonoBehaviour
 {
-    public GameObject snapNodePrefab;
-    public GameObject previewPlacementPrefab;
-
+    [Header("References")]
+    [SerializeField]
+    private GameManager gameManager;
+    [SerializeField]
     private RootTree rootTree;
-    private GameObject previewSnap;
-    private GameObject previewPlacement;
-    private RootTree.PointSearch snapPoint;
+    [SerializeField]
+    private GameObject snapNodePrefab;
+    [SerializeField]
+    private GameObject previewPlacementPrefab; 
+    [SerializeField]
+    private Color previewErrorColor = Color.red;
 
+    [Header("Placement")]
+    private float pricePerMeter = 2.5f;
     public bool hasFocus = false;
-
     public float snapRange = 1f;
     public float zPosition = -1;
+
+    private GameObject previewSnap;
+    private GameObject previewPlacement;
+    [SerializeField]
+    private Color previewInitialColor = Color.white;
+    private Color previewTextInitialColor = Color.white;
+    private RootTree.PointSearch snapPoint;
 
     private Vector3? previewStartPoint = null;
     // Start is called before the first frame update
@@ -24,11 +37,11 @@ public class RootController : MonoBehaviour
     {
         previewPlacement = Instantiate(previewPlacementPrefab);
         previewPlacement.SetActive(false);
+        LineRenderer lineRenderer = previewPlacement.GetComponent<LineRenderer>();
+        TextMeshPro textRenderer = previewPlacement.GetComponentInChildren<TextMeshPro>();
 
         previewSnap = Instantiate(snapNodePrefab);
         previewSnap.SetActive(false);
-
-        rootTree = GetComponent<RootTree>();
     }
 
     // Update is called once per frame
@@ -41,14 +54,31 @@ public class RootController : MonoBehaviour
 
             if (previewStartPoint != null)
             {
-                LineRenderer rootRenderer = previewPlacement.GetComponent<LineRenderer>();
+                LineRenderer lineRenderer = previewPlacement.GetComponent<LineRenderer>();
+                TextMeshPro textRenderer = previewPlacement.GetComponentInChildren<TextMeshPro>();
 
                 var points = new Vector3[2];
                 points[0] = previewStartPoint.Value;
                 points[1] = mouseWorldPos;
 
-                rootRenderer.positionCount = 2;
-                rootRenderer.SetPositions(points);
+                // check if the segment can be bought
+                var distance = Vector2.Distance(points[0], points[1]);
+                var price = distance * pricePerMeter;
+                textRenderer.text = "-" + price.ToString("0");
+                if (!gameManager.CanBuy(price))
+                {
+                    lineRenderer.SetColors(previewErrorColor, previewErrorColor);
+                    textRenderer.color = previewErrorColor;
+                }
+                else
+                {
+                    lineRenderer.SetColors(previewInitialColor, previewInitialColor);
+                    textRenderer.color = previewTextInitialColor;
+                }
+
+                lineRenderer.positionCount = 2;
+                lineRenderer.SetPositions(points);
+                previewPlacement.transform.position = previewStartPoint.Value;
                 previewPlacement.SetActive(true);
             }
             else
@@ -78,7 +108,7 @@ public class RootController : MonoBehaviour
                 {
                     previewStartPoint = previewSnap.transform.position;
                 }
-                else if(previewStartPoint != null)
+                else if (previewStartPoint != null)
                 {
                     generateNewRootSegment(snapPoint.parent, previewStartPoint.Value, mouseWorldPos, snapPoint.left);
                 }
@@ -95,6 +125,15 @@ public class RootController : MonoBehaviour
     void generateNewRootSegment(RootTree.RootNode parent, Vector3 start, Vector3 end, bool left)
     {
         print("Generating new segment");
+
+        var distance = Vector2.Distance(start, end);
+        var price = distance * pricePerMeter;
+        if (!gameManager.Buy(price))
+        {
+            print("Cannot create segment, aborting creation");
+            return;
+        }
+
         var insertNode = new RootTree.RootNode(start, parent);
         var endNode = new RootTree.RootNode(end, insertNode);
         rootTree.InsertIntersection(insertNode, parent, left);

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6936154661283355962}
   - component: {fileID: 3406689833266857140}
   m_Layer: 0
-  m_Name: WaterPocketPrefab
+  m_Name: SoftSandZonePrefab
   m_TagString: WaterPocket
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -179,7 +179,6 @@ MonoBehaviour:
   segments: 0
   width: 0
   height: 0
-  waterQuantity: 0
 --- !u!60 &3406689833266857140
 PolygonCollider2D:
   m_ObjectHideFlags: 0
