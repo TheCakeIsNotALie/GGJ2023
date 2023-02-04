@@ -7,6 +7,8 @@ public enum GameState { Seed, Sapling, YoungTree, OldTree, FullGrown }
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
+
     private float elapsedTime = 0f;
     [Header("GameState changing")]
     [SerializeField]
@@ -43,6 +45,21 @@ public class GameManager : MonoBehaviour
     private float timerBetweenEnemy = 5f;
     [SerializeField]
     private float timeRemainingBeforeNewEnemy = 10f;
+    [SerializeField]
+    private float accelerationOfEnemySpawn = 0.1f;
+    [SerializeField]
+    private float minimalTimeBetweenSpawn = 1f;
+    public List<Enemy_Script> enemies = new List<Enemy_Script>();
+
+
+
+    [Header("Defenses Settings")]
+    [SerializeField]
+    private GameObject prefabDefense;
+    [SerializeField]
+    private Transform[] defensePoints;
+    private int takenDefensePoints;
+
 
 
     [Header("Debug")]
@@ -54,13 +71,18 @@ public class GameManager : MonoBehaviour
     private bool lose = false;
 
 
-
+    private void Awake() {
+        if(instance != null) {
+            print("Plusieurs GameManager");
+        }
+        instance = this;
+    }
 
     void Start() {
     }
 
     public bool CanBuy(float sapCost) {
-        if (currentSap > sapCost) {
+        if (currentSap >= sapCost) {
             return true;
         }
         return false;
@@ -71,6 +93,27 @@ public class GameManager : MonoBehaviour
             currentSap -= sapCost;
         }
         return ret;
+    }
+    public bool HasSpaceForDefense() {
+        return (takenDefensePoints < defensePoints.Length);
+    }
+    public bool Buy(DefenseStats defenseStats) {
+        if (!HasSpaceForDefense()) {
+            return false;
+        }
+        if (!Buy(defenseStats.cost)) {
+            return false;
+        }
+        PutDefenseAtPoint(defenseStats, takenDefensePoints);
+        takenDefensePoints++;
+        return true;
+    }
+    private void PutDefenseAtPoint(DefenseStats def,int id) {
+        Transform parent = defensePoints[id];
+        GameObject go = Instantiate(prefabDefense, parent);
+        Defense_Script defScript = go.GetComponent<Defense_Script>();
+        defScript.SetDefenseStats(def);
+        print("Put defense " + def.name + " At "+id.ToString());
     }
 
     private void Lose() {
@@ -144,12 +187,16 @@ public class GameManager : MonoBehaviour
         //EnemySpawn
         EnemySpawn(Time.deltaTime);
     }
-
     private void EnemySpawn(float deltaTime) {
         timeRemainingBeforeNewEnemy -= deltaTime;
         if(timeRemainingBeforeNewEnemy <= 0) {
-            spawner.SpawnAnEnemy(this, actualState);
+            enemies.Add(spawner.SpawnAnEnemy(this, actualState));
             timeRemainingBeforeNewEnemy = timerBetweenEnemy;
+            timerBetweenEnemy -= accelerationOfEnemySpawn;
+            if (timerBetweenEnemy < minimalTimeBetweenSpawn) {
+                timerBetweenEnemy = minimalTimeBetweenSpawn;
+                accelerationOfEnemySpawn = 0f;
+            }
         }
     }
 }
