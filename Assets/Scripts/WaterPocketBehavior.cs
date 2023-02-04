@@ -8,6 +8,7 @@ public class WaterPocketBehavior : MonoBehaviour
     public int segments;
     public float width;
     public float height;
+    public float waterQuantity;
 
     // Start is called before the first frame update
     void Start()

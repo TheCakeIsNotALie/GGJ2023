@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class WorldGeneration : MonoBehaviour
 {
+    [Header("Water Pockets")]
     public GameObject waterPocketPrefab;
     public int numberOfPockets = 5;
     public float startingSize = 2.5f;
     public float variation = 2;
+    public float waterDensity = 1;
     public Rect spawnZone;
     public float zPosition = -1;
 
@@ -51,6 +53,7 @@ public class WorldGeneration : MonoBehaviour
             wpb.segments = 20;
             wpb.width = startingSize + Random.Range(-variation, variation);
             wpb.height = startingSize + Random.Range(-variation, variation);
+            wpb.waterQuantity = wpb.width * wpb.height * waterDensity;
 
             spawns.Add(new KeyValuePair<float, Vector3>(Mathf.Max(wpb.width, wpb.height) + 4, position));
         }
