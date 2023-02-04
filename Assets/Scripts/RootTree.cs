@@ -22,7 +22,6 @@ public class RootTree : MonoBehaviour
             set
             {
                 parent = value;
-                parent.UpdateChildCount();
             }
         }
         public RootNode Left
@@ -62,6 +61,10 @@ public class RootTree : MonoBehaviour
 
         private void UpdateChildCount()
         {
+            if(parent != null)
+            {
+                this.parent.UpdateChildCount();
+            }
             if (left != null)
             {
                 this.childCount = left.ChildCount + 1;
@@ -96,7 +99,7 @@ public class RootTree : MonoBehaviour
     public RootNode main;
     private WorldGeneration worldGen;
     private List<Collider2D> waterPocketColliders;
-    public HashSet<WaterPocketBehavior> linkedWaterPockets;
+    public HashSet<WaterPocketBehavior> linkedWaterPockets = new HashSet<WaterPocketBehavior>();
 
     // Start is called before the first frame update
     void Start()

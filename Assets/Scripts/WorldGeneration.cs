@@ -9,7 +9,7 @@ public class WorldGeneration : MonoBehaviour
     public float startingSize = 2.5f;
     public float variation = 2;
     public Rect spawnZone;
-    public float zPosition;
+    public float zPosition = -1;
 
     List<KeyValuePair<float, Vector3>> spawns = new List<KeyValuePair<float, Vector3>>();
     public List<GameObject> waterPocketList = new List<GameObject>();

@@ -10,6 +10,17 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     private float timeElapsedSinceStart = 0f;
+    [Header("Game state")]
+    [SerializeField]
+    private Animator cameraAnimator;
+    [SerializeField]
+    private GameObject undergroundCameraTarget;
+    [SerializeField]
+    private float cameraSpeed = 1;
+    [SerializeField]
+    private RootController rootController;
+    private bool overgroundCamera = true;
+
     [Header("Growth Settings")]
     [SerializeField]
     private float timeBeforeSapling = 10f;
@@ -175,13 +186,38 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Time.timeScale = debugTime;
+
+        timeElapsedSinceStart += Time.deltaTime;
+
+        // camera controls
+        if (Input.GetKeyDown("space"))
+        {
+            // switch state between over and under ground
+            overgroundCamera = !overgroundCamera;
+            if (overgroundCamera)
+            {
+                cameraAnimator.Play("Overground");
+            }
+            else
+            {
+                cameraAnimator.Play("Underground");
+            }
+
+            rootController.hasFocus = !overgroundCamera;
+        }
+        // if we are underground with the camera
+        if (!overgroundCamera)
+        {
+            float horizontalInput = Input.GetAxis("Horizontal");
+            float verticalInput = Input.GetAxis("Vertical");
+
+            undergroundCameraTarget.transform.position += new Vector3(cameraSpeed*horizontalInput, cameraSpeed*verticalInput);
+        }
+
         if (lose) {
             return;
         }
-        Time.timeScale = debugTime;
-
-
-        timeElapsedSinceStart += Time.deltaTime;
 
         //Show Growth
         growthVisual.SetGrowth(timeElapsedSinceStart, timeBeforeFullGrown);
