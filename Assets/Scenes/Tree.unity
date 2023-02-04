@@ -2048,11 +2048,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 441263035046836017, guid: 4d8ee7a1c272cb24d930200c55845e9f, type: 3}
       propertyPath: minTrunkWidth
-      value: 0.1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 441263035046836017, guid: 4d8ee7a1c272cb24d930200c55845e9f, type: 3}
       propertyPath: minTrunkHeight
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 441263035046836031, guid: 4d8ee7a1c272cb24d930200c55845e9f, type: 3}
       propertyPath: m_Name
@@ -2125,6 +2125,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2021745305}
     - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
+      propertyPath: maxSap
+      value: 666
+      objectReference: {fileID: 0}
+    - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
       propertyPath: spawner
       value: 
       objectReference: {fileID: 20389986}
@@ -2142,7 +2146,7 @@ PrefabInstance:
       objectReference: {fileID: 1418702575}
     - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
       propertyPath: sapPerSecond
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
       propertyPath: prefabDefense

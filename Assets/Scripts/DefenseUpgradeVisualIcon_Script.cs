@@ -19,6 +19,9 @@ public class DefenseUpgradeVisualIcon_Script : MonoBehaviour
     [SerializeField]
     private GameObject delete;
 
+    [SerializeField]
+    private GameObject unaffordableFilter;
+
     public void OnDeleteClick() {
         print("Must Delete Something");
         Defense_Script def = assignedDefense.GetComponent<Defense_Script>();
@@ -75,6 +78,16 @@ public class DefenseUpgradeVisualIcon_Script : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(assignedDefense == null) {
+            unaffordableFilter.SetActive(false);
+            return;
+        }
+        DefenseStats defenseStats = assignedDefense.GetComponent<Defense_Script>().GetDefenseStats();
+        if(defenseStats.upgrade == null) {
+            unaffordableFilter.SetActive(false);
+            return;
+        }
+
+        unaffordableFilter.SetActive(!GameManager.instance.CanBuy(defenseStats.upgrade.cost));
     }
 }

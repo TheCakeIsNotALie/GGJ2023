@@ -39,6 +39,5 @@ public class DefenseUpgradeVisual_Script : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 }

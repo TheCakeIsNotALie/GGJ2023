@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviour
     }
 
     private void Lose() {
-        lose = false;
+        //lose = true;
     }
     public void Attacked(float value) {
         currentSap -= value;
