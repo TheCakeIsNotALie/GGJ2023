@@ -53,7 +53,8 @@ public class Defense_Script : MonoBehaviour
             return;
         currentTimerBeforeAttack = defensesStats.timeBetweenAttacks;
 
-        GameObject projectile = Instantiate(prefabProjectile,transform);
+        GameObject projectile = Instantiate(prefabProjectile);
+        projectile.transform.position = transform.position;
         Projectile_Script projectile_Script = projectile.GetComponent<Projectile_Script>();
         projectile_Script.Preshot(target,defensesStats);
     }

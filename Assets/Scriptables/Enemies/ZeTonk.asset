@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnTime: 0
   name: Debile
-  damage: 0
+  damage: 76.16
   speed: 0.1
   image: {fileID: 21300000, guid: b76f6119b967d0844b2f6da8aa23faf9, type: 3}
   pv: 2000
-  timeBetweenAttacks: 200
-  attackDistance: 2
+  timeBetweenAttacks: 0.4
+  attackDistance: 24.81

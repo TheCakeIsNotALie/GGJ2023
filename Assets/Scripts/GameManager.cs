@@ -9,8 +9,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    private float elapsedTime = 0f;
-    [Header("GameState changing")]
+    private float timeElapsedSinceStart = 0f;
+    [Header("Growth Settings")]
     [SerializeField]
     private float timeBeforeSapling = 10f;
     [SerializeField]
@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     private float timeBeforeOldTree = 300f;
     [SerializeField]
     private float timeBeforeFullGrown = 500f;
+    [SerializeField]
+    private GrowthVisual_Script growthVisual;
 
     private GameState actualState = GameState.Seed;
 
@@ -34,7 +36,7 @@ public class GameManager : MonoBehaviour
 
     public float nextCost = 0;
 
-    [Header("Tree")]
+    [Header("Tree Settings")]
     [SerializeField]
     Tree_Script tree;
 
@@ -79,6 +81,8 @@ public class GameManager : MonoBehaviour
     }
 
     void Start() {
+        growthVisual.SetTicks(timeBeforeSapling, timeBeforeYoungTree, timeBeforeOldTree, timeBeforeFullGrown);
+        growthVisual.SetGrowth(timeElapsedSinceStart, timeBeforeFullGrown);
     }
 
     public bool CanBuy(float sapCost) {
@@ -130,7 +134,7 @@ public class GameManager : MonoBehaviour
 
 
     private void ActualizeTree(float deltaTime) {
-        float treeGrowthPercent = Mathf.InverseLerp(timeBeforeSapling, timeBeforeFullGrown, elapsedTime);
+        float treeGrowthPercent = Mathf.InverseLerp(timeBeforeSapling, timeBeforeFullGrown, timeElapsedSinceStart);
         tree.SetSize(treeGrowthPercent);
 
         //Sap Gain
@@ -144,22 +148,22 @@ public class GameManager : MonoBehaviour
     private void ActualizeState() {
         switch (actualState) {
             case GameState.Seed:
-                if (elapsedTime > timeBeforeSapling) {
+                if (timeElapsedSinceStart > timeBeforeSapling) {
                     actualState = GameState.Sapling;
                 }
                 break;
             case GameState.Sapling:
-                if (elapsedTime > timeBeforeYoungTree) {
+                if (timeElapsedSinceStart > timeBeforeYoungTree) {
                     actualState = GameState.YoungTree;
                 }
                 break;
             case GameState.YoungTree:
-                if (elapsedTime > timeBeforeOldTree) {
+                if (timeElapsedSinceStart > timeBeforeOldTree) {
                     actualState = GameState.OldTree;
                 }
                 break;
             case GameState.OldTree:
-                if (elapsedTime > timeBeforeFullGrown) {
+                if (timeElapsedSinceStart > timeBeforeFullGrown) {
                     actualState = GameState.FullGrown;
                 }
                 break;
@@ -177,7 +181,11 @@ public class GameManager : MonoBehaviour
         Time.timeScale = debugTime;
 
 
-        elapsedTime += Time.deltaTime;
+        timeElapsedSinceStart += Time.deltaTime;
+
+        //Show Growth
+        growthVisual.SetGrowth(timeElapsedSinceStart, timeBeforeFullGrown);
+
         //State Managment
         ActualizeState();
 
