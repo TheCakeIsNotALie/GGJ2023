@@ -27,6 +27,7 @@ public class GrowthVisual_Script : MonoBehaviour {
         float p2X = timeBeforeP2 / timeBeforeFull * width;
         float p3X = timeBeforeP3 / timeBeforeFull * width;
 
+        if (mine == null) mine = GetComponent<RectTransform>();
         Vector3 ticksY = new Vector3(0, mine.position.y, 0);
 
         p1Tick.SetPositionAndRotation(Vector3.right*p1X + ticksY, new Quaternion());

@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
     private GameObject prefabDefense;
     [SerializeField]
     private Transform[] defensePoints;
-    private GameObject[] defenses;
+    private GameObject[] defenses = new GameObject[0];
 
     [SerializeField]
     private DefenseUpgradeVisual_Script defenseUpgrade;

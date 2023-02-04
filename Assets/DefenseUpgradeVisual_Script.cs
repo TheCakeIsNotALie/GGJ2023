@@ -19,6 +19,7 @@ public class DefenseUpgradeVisual_Script : MonoBehaviour
 
     public void InitIcons(int nbIcones) {
         mesIconesCurrentementExistants = new DefenseUpgradeVisualIcon_Script[nbIcones];
+        if(rTransform == null) rTransform = GetComponent<RectTransform>(); 
         rTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, nbIcones / 5 * 64 + 6);
         rTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Clamp(nbIcones ,0,5) * 64 + 6);
         for (int i = 0; i < nbIcones; i++) {
