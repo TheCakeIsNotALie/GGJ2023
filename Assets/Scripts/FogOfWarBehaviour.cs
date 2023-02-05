@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FogOfWarBehavior : MonoBehaviour
+public class FogOfWarBehaviour : MonoBehaviour
 {
     private Rigidbody2D rb;
     [SerializeField]

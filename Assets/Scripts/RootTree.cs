@@ -100,7 +100,7 @@ public class RootTree : MonoBehaviour
     public RootNode main;
    
     private List<Collider2D> waterPocketColliders;
-    public HashSet<WaterPocketBehavior> linkedWaterPockets = new HashSet<WaterPocketBehavior>();
+    public HashSet<WaterPocketBehaviour> linkedWaterPockets = new HashSet<WaterPocketBehaviour>();
 
     // Start is called before the first frame update
     void Start()
@@ -147,13 +147,13 @@ public class RootTree : MonoBehaviour
         foreach (var hit in hits)
         {
             print(hit.collider.gameObject);
-            var wpb = hit.collider.gameObject.GetComponent<WaterPocketBehavior>();
+            var wpb = hit.collider.gameObject.GetComponent<WaterPocketBehaviour>();
             if(wpb != null)
             {
                 linkedWaterPockets.Add(wpb);
                 continue;
             }
-            var fowb = hit.collider.gameObject.GetComponent<FogOfWarBehavior>();
+            var fowb = hit.collider.gameObject.GetComponent<FogOfWarBehaviour>();
             if(fowb != null)
             {
                 print("Hit FOG");

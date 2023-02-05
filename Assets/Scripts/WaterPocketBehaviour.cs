@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 
-public class WaterPocketBehavior : MonoBehaviour
+public class WaterPocketBehaviour : MonoBehaviour
 {
     public int segments;
     public float width;
@@ -21,16 +21,11 @@ public class WaterPocketBehavior : MonoBehaviour
         ssc.spline.Clear();
         for (int i = 0; i < segments; i++)
         {
-            try
-            {
-                float rndX = UnityEngine.Random.Range(-0.1f, 0.1f) * width;
-                float rndY = UnityEngine.Random.Range(-0.1f, 0.1f) * height;
-                ssc.spline.InsertPointAt(i, new Vector3(Mathf.Cos(angle + angleOffset) * width + rndX, Mathf.Sin(angle) * height + rndY));
-            }
-            catch (ArgumentException ex)
-            {
-                ssc.spline.InsertPointAt(i, new Vector3(Mathf.Cos(angle + angleOffset) * width, Mathf.Sin(angle) * height));
-            }
+
+            float rndX = UnityEngine.Random.Range(-0.1f, 0.1f) * width;
+            float rndY = UnityEngine.Random.Range(-0.1f, 0.1f) * height;
+            ssc.spline.InsertPointAt(i, new Vector3(Mathf.Cos(angle + angleOffset) * width + rndX, Mathf.Sin(angle - angleOffset) * height + rndY));
+
             angle += 2 * Mathf.PI / segments;
         }
     }
@@ -38,6 +33,6 @@ public class WaterPocketBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
