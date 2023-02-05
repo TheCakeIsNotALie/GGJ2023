@@ -14,13 +14,17 @@ public class RootController : MonoBehaviour
     [SerializeField]
     private GameObject snapNodePrefab;
     [SerializeField]
-    private GameObject previewPlacementPrefab; 
+    private GameObject previewPlacementPrefab;
     [SerializeField]
     private Color previewErrorColor = Color.red;
 
     [Header("Placement")]
     [SerializeField]
     private float pricePerMeter = 2.5f;
+    [SerializeField]
+    private float gravelPricePerMeter = 5f;
+    [SerializeField]
+    private float gravelCheckGranularity = 0.1f;
     public bool hasFocus = false;
     [SerializeField]
     private float snapRange = 1f;
@@ -56,7 +60,7 @@ public class RootController : MonoBehaviour
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPos.z = zPosition;
-            
+
             if (previewStartPoint != null)
             {
                 LineRenderer lineRenderer = previewPlacement.GetComponent<LineRenderer>();
@@ -68,9 +72,10 @@ public class RootController : MonoBehaviour
 
                 // check if the segment can be bought
                 var distance = Vector2.Distance(points[0], points[1]);
-                var price = distance * pricePerMeter;
-                textRenderer.text = "-" + price.ToString("0");
-                if (!gameManager.CanBuy(price))
+                var computedPrice = CheckForSegmentPrice(mouseWorldPos);
+
+                textRenderer.text = "-" + computedPrice.ToString("0");
+                if (!gameManager.CanBuy(computedPrice))
                 {
                     lineRenderer.startColor = previewErrorColor;
                     lineRenderer.endColor = previewErrorColor;
@@ -117,9 +122,9 @@ public class RootController : MonoBehaviour
                 }
                 else if (previewStartPoint != null)
                 {
-                    generateNewRootSegment(
+                    GenerateNewRootSegment(
                         snapPoint.parent,
-                        Helpers.CopyV3(previewStartPoint.Value,zPosition),
+                        Helpers.CopyV3(previewStartPoint.Value, zPosition),
                         Helpers.CopyV3(mouseWorldPos, zPosition),
                         snapPoint.left
                         );
@@ -134,12 +139,11 @@ public class RootController : MonoBehaviour
         }
     }
 
-    void generateNewRootSegment(RootTree.RootNode parent, Vector3 start, Vector3 end, bool left)
+    void GenerateNewRootSegment(RootTree.RootNode parent, Vector3 start, Vector3 end, bool left)
     {
         print("Generating new segment");
 
-        var distance = Vector2.Distance(start, end);
-        var price = distance * pricePerMeter;
+        var price = CheckForSegmentPrice(end);
         if (!gameManager.Buy(price))
         {
             print("Cannot create segment, aborting creation");
@@ -153,5 +157,61 @@ public class RootController : MonoBehaviour
 
         // clear preview inputs for next inputs
         previewStartPoint = null;
+    }
+
+    float CheckForSegmentPrice(Vector2 mouseWorldPosition)
+    {
+        float normalDistance = 0f;
+        float gravelDistance = 0f;
+        List<RaycastHit2D> hits = new List<RaycastHit2D>();
+        Physics2D.Linecast(previewStartPoint.Value, mouseWorldPosition, new ContactFilter2D(), hits);
+
+        List<Collider2D> gravelColliders = new List<Collider2D>();
+        Vector2 currentLocation = Vector2.zero;
+        foreach (var hit in hits)
+        {
+            var gpb = hit.collider.gameObject.GetComponent<GravelPatchBehaviour>();
+            if (gpb != null)
+            {
+                gravelColliders.Add(hit.collider);
+                currentLocation = hit.point;
+                normalDistance = hit.distance;
+            }
+        }
+
+        if (gravelColliders.Count > 0)
+        {
+            Vector2 step = ((Vector2)mouseWorldPosition - currentLocation).normalized * gravelCheckGranularity;
+            int stepsNeeded = (int)(Vector2.Distance(currentLocation, mouseWorldPosition) / gravelCheckGranularity);
+            for (int i = 0; i < stepsNeeded; i++)
+            {
+                currentLocation = currentLocation + step;
+                bool inGravel = false;
+                foreach (var collider in gravelColliders)
+                {
+                    Vector2 closest = collider.ClosestPoint(currentLocation);
+                    if (closest == currentLocation)
+                    {
+                        inGravel = true;
+                        break;
+                    }
+                }
+
+                if (inGravel)
+                {
+                    gravelDistance += gravelCheckGranularity;
+                }
+                else
+                {
+                    normalDistance += gravelCheckGranularity;
+                }
+            }
+        }
+        else
+        {
+            normalDistance = Vector3.Distance(previewStartPoint.Value, mouseWorldPosition);
+        }
+        print("normal : " + normalDistance + ", gravel : " + gravelDistance);
+        return normalDistance * pricePerMeter + gravelDistance * gravelPricePerMeter;
     }
 }

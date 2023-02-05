@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 1056417996044514535}
   - component: {fileID: 1056417996044514534}
   - component: {fileID: 1056417996044514529}
-  - component: {fileID: 6936154661283355962}
   - component: {fileID: 3406689833266857140}
+  - component: {fileID: 2682457279239884918}
   m_Layer: 0
   m_Name: GravelPatchPrefab
-  m_TagString: WaterPocket
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -55,7 +55,7 @@ SpriteShapeRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bcb4395b8fb865f4995ec464d1a0242c, type: 2}
+  - {fileID: 2100000, guid: 716034cc95c39164ea96b98ece72a2f8, type: 2}
   - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -77,9 +77,9 @@ SpriteShapeRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Color: {r: 0.6415094, g: 0.23199005, b: 0, a: 1}
+  m_Color: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 1}
   m_MaskInteraction: 0
-  m_ShapeTexture: {fileID: 2800000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
+  m_ShapeTexture: {fileID: 2800000, guid: e9ebf77d21c7197469a7c4b6527e922c, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 0ae2b74b1edd14bb18dd7b65ae916a54, type: 3}
   - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
@@ -148,7 +148,7 @@ MonoBehaviour:
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
-  m_SpriteShape: {fileID: 11400000, guid: f24cddf7c09a6442abbce710a6fd7397, type: 2}
+  m_SpriteShape: {fileID: 11400000, guid: 343997f9e2c22134496f11c1701dcc49, type: 2}
   m_FillPixelPerUnit: 256
   m_StretchTiling: 1
   m_SplineDetail: 8
@@ -164,22 +164,6 @@ MonoBehaviour:
   m_EnableTangents: 0
   m_GeometryCached: 0
   m_UTess2D: 0
---- !u!114 &6936154661283355962
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1056417996044514528}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80b60bd55db312d45bf742b6f913de38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  segments: 0
-  width: 0
-  height: 0
-  waterQuantity: 0
 --- !u!60 &3406689833266857140
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -228,3 +212,16 @@ PolygonCollider2D:
       - {x: -0.6727185, y: -1.271014}
       - {x: -0.9333324, y: -1.2071754}
       - {x: -1.2079462, y: -1.1012399}
+--- !u!114 &2682457279239884918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1056417996044514528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: deee28470aeaaae43a65aa7cf770588f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path: []

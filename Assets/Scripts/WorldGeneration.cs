@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class WorldGeneration : MonoBehaviour
 {
@@ -15,12 +16,25 @@ public class WorldGeneration : MonoBehaviour
     public AnimationCurve waterPocketSizeCurve;
     public float waterPocketSizeStdDev;
     public float waterPocketVariation;
-    public int numberOfPockets = 5;
+    public int numberOfPockets = 50;
     public float waterDensity = 1;
+
+    [Header("Gravel Patches")]
+    public GameObject gravelPatchPrefab;
+    public float gravelPatchPosMean;
+    public float gravelPatchPosStdDev;
+    public float gravelPatchMinSize = 10;
+    public float gravelPatchMaxSize = 10;
+    public AnimationCurve gravelPatchSizeCurve;
+    public int gravelPatchLengthMin = 20;
+    public int gravelPatchLengthMax = 40;
+    public int numberOfPatches = 10;
+
     public Rect spawnZone;
     public float zPosition = -1;
+    public float margin = 4;
 
-    List<KeyValuePair<float, Vector3>> spawns = new List<KeyValuePair<float, Vector3>>();
+    private List<KeyValuePair<float, Vector3>> spawns = new List<KeyValuePair<float, Vector3>>();
     public List<GameObject> waterPocketList = new List<GameObject>();
 
     [SerializeField]
@@ -39,6 +53,8 @@ public class WorldGeneration : MonoBehaviour
     private float fogOfWarVariation;
     [SerializeField]
     private int amountFogPoints = 10000;
+    [SerializeField]
+    public Rect fogZone;
     private Vector3[] fogPoints;
     // Start is called before the first frame update
     void Start()
@@ -64,7 +80,7 @@ public class WorldGeneration : MonoBehaviour
         fogPoints = new Vector3[amountFogPoints];
         for (int i = 0; i < amountFogPoints; i++)
         {
-            fogPoints[i] = new Vector3(Random.Range(spawnZone.x, spawnZone.x + spawnZone.width), Random.Range(spawnZone.y, spawnZone.y + spawnZone.height), zPosition);
+            fogPoints[i] = new Vector3(Random.Range(fogZone.x, fogZone.x + fogZone.width), Random.Range(fogZone.y, fogZone.y + fogZone.height), zPosition);
         }
 
         var calc = new DelaunayCalculator();
@@ -110,26 +126,12 @@ public class WorldGeneration : MonoBehaviour
             var waterPocket = Instantiate(waterPocketPrefab);
             waterPocketList.Add(waterPocket);
 
-            Vector3 position;
-            bool isTooClose;
-            do
+            Vector3 position = FindRandomPointNotClose(() =>
             {
-                isTooClose = false;
-
                 float x = Random.Range(spawnZone.x, spawnZone.x + spawnZone.width);
-                float y = spawnZone.y + Mathf.Clamp(MathHelper.RandomStdDev(1-waterPocketPosMean, waterPocketPosStdDev), 0, 1) * spawnZone.height;
-                position = new Vector3(x, y, zPosition);
-
-                foreach (var spawn in spawns)
-                {
-                    if (Vector2.Distance(position, spawn.Value) < spawn.Key)
-                    {
-                        isTooClose = true;
-                        break;
-                    }
-                }
-            } while (isTooClose);
-
+                float y = spawnZone.y + Mathf.Clamp(MathHelper.RandomStdDev(1 - waterPocketPosMean, waterPocketPosStdDev), 0, 1) * spawnZone.height;
+                return new Vector3(x, y, zPosition);
+            });
 
             waterPocket.transform.position = position;
             var normalizedDepth = 1 - (position.y - spawnZone.y) / spawnZone.height;
@@ -138,49 +140,61 @@ public class WorldGeneration : MonoBehaviour
             wpb.height = Mathf.Max(waterPocketMinSize, waterPocketMaxSize * waterPocketSizeCurve.Evaluate(normalizedDepth) + Random.Range(-waterPocketVariation, waterPocketVariation));
             wpb.waterQuantity = wpb.width * wpb.height * waterDensity;
             wpb.angleOffset = Random.Range(0, Mathf.PI * 2);
-            wpb.segments = (int)Mathf.Max((wpb.width + wpb.height)*2, 4);
+            wpb.segments = (int)Mathf.Max((wpb.width + wpb.height) * 2, 4);
 
-            spawns.Add(new KeyValuePair<float, Vector3>(Mathf.Max(wpb.width, wpb.height) + 4, position));
+            spawns.Add(new KeyValuePair<float, Vector3>(Mathf.Max(wpb.width, wpb.height) + margin, position));
         }
     }
 
     void SpawnGravelPatches()
     {
-        //for (int i = 0; i < numberOfPockets; i++)
-        //{
-        //    var gravelPatch = Instantiate(waterPocketPrefab);
+        print("Generating, " + numberOfPatches + " of patches");
+        for (int i = 0; i < numberOfPatches; i++)
+        {
+            print("Generating " + i);
+            var gravelPatch = Instantiate(gravelPatchPrefab);
 
-        //    List<Vector3> path = new List<Vector3>();
-        //    bool isTooClose;
-        //    do
-        //    {
-        //        isTooClose = false;
+            Vector3 position = FindRandomPointNotClose(() =>
+            {
+                float x = Random.Range(spawnZone.x, spawnZone.x + spawnZone.width);
+                float y = spawnZone.y + Mathf.Clamp(MathHelper.RandomStdDev(1 - gravelPatchPosMean, gravelPatchPosStdDev), 0, 1) * spawnZone.height;
+                return new Vector3(x, y, zPosition);
+            });
 
-        //        float x = Random.Range(spawnZone.x, spawnZone.x + spawnZone.width);
-        //        float y = spawnZone.y + Mathf.Clamp(MathHelper.RandomStdDev(1 - waterPocketPosMean, waterPocketPosStdDev), 0, 1) * spawnZone.height;
-        //        position = new Vector3(x, y, zPosition);
+            gravelPatch.transform.position = position;
+            var normalizedDepth = 1 - (position.y - spawnZone.y) / spawnZone.height;
+            var wpb = gravelPatch.GetComponent<GravelPatchBehaviour>();
+            float inflation = Mathf.Max(gravelPatchMinSize, gravelPatchMaxSize * gravelPatchSizeCurve.Evaluate(normalizedDepth));
+            int patchLength = Random.Range(gravelPatchLengthMin, gravelPatchLengthMax);
+            List<Vector3> path = Helpers.GenerateRandomConvexPolygon(patchLength).Select((x) => Helpers.CopyV3(x * inflation, zPosition)).ToList();
+            path.Reverse();
+            wpb.path = path;
+            
 
-        //        foreach (var spawn in spawns)
-        //        {
-        //            if (Vector2.Distance(position, spawn.Value) < spawn.Key)
-        //            {
-        //                isTooClose = true;
-        //                break;
-        //            }
-        //        }
-        //    } while (isTooClose);
+            spawns.Add(new KeyValuePair<float, Vector3>(inflation + margin, position));
+        }
+    }
 
+    private Vector3 FindRandomPointNotClose(System.Func<Vector3> randomPoint)
+    {
+        Vector3 position;
+        bool isTooClose;
+        do
+        {
+            isTooClose = false;
 
-        //    gravelPatch.transform.position = position;
-        //    var normalizedDepth = 1 - (position.y - spawnZone.y) / spawnZone.height;
-        //    var wpb = gravelPatch.GetComponent<WaterPocketBehaviour>();
-        //    wpb.width = Mathf.Max(waterPocketMinSize, waterPocketMaxSize * waterPocketSizeCurve.Evaluate(normalizedDepth) + Random.Range(-waterPocketVariation, waterPocketVariation));
-        //    wpb.height = Mathf.Max(waterPocketMinSize, waterPocketMaxSize * waterPocketSizeCurve.Evaluate(normalizedDepth) + Random.Range(-waterPocketVariation, waterPocketVariation));
-        //    wpb.waterQuantity = wpb.width * wpb.height * waterDensity;
-        //    wpb.angleOffset = Random.Range(0, Mathf.PI * 2);
-        //    wpb.segments = (int)Mathf.Max((wpb.width + wpb.height) * 2, 4);
+            position = randomPoint.Invoke();
 
-        //    spawns.Add(new KeyValuePair<float, Vector3>(Mathf.Max(wpb.width, wpb.height) + 4, position));
-        //}
+            foreach (var spawn in spawns)
+            {
+                if (Vector2.Distance(position, spawn.Value) < spawn.Key)
+                {
+                    isTooClose = true;
+                    break;
+                }
+            }
+        } while (isTooClose);
+
+        return position;
     }
 }

@@ -107,7 +107,6 @@ public class RootTree : MonoBehaviour
     {
         RootNode.rootPrefab = rootPrefab;
         main = new RootNode(new Vector3(0,0,zPosition));
-        print(main);
         UpdateNodeDisplay(main);
     }
 
@@ -146,7 +145,6 @@ public class RootTree : MonoBehaviour
 
         foreach (var hit in hits)
         {
-            print(hit.collider.gameObject);
             var wpb = hit.collider.gameObject.GetComponent<WaterPocketBehaviour>();
             if(wpb != null)
             {
@@ -156,7 +154,6 @@ public class RootTree : MonoBehaviour
             var fowb = hit.collider.gameObject.GetComponent<FogOfWarBehaviour>();
             if(fowb != null)
             {
-                print("Hit FOG");
                 fowb.Kill();
             }
         }
@@ -208,6 +205,8 @@ public class RootTree : MonoBehaviour
             insert.Parent = parent;
             parent.Right = insert;
         }
+        UpdateNodeDisplay(insert);
+        UpdateNodeDisplay(parent);
     }
 
     public void InsertLeaf(RootNode insert, RootNode parent)
@@ -225,7 +224,11 @@ public class RootTree : MonoBehaviour
         else
         {
             print("No available leaf, skipping");
+            return;
         }
+
+        UpdateNodeDisplay(insert);
+        UpdateNodeDisplay(parent);
     }
 
     public class PointSearch
