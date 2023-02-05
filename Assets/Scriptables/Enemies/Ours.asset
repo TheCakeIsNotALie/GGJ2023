@@ -15,8 +15,8 @@ MonoBehaviour:
   spawnTime: 3
   name: Ours
   damage: 5
-  speed: 0.75
-  image: {fileID: 847721626, guid: 1fee87d0e751ead4a908fcce1f01f56c, type: 3}
+  speed: 3
+  image: {fileID: -1748787911, guid: 1fee87d0e751ead4a908fcce1f01f56c, type: 3}
   pv: 120
   timeBetweenAttacks: 1
   attackDistance: 3

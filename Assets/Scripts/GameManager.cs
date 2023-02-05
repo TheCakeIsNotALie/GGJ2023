@@ -48,9 +48,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private float maxSap = 50f;
     [SerializeField]
-    private float sapPerSecond = 1f;
+    private float sapBasePerSecond = 0.5f;
+
+    private float sapPerSecond = 0f;
     [SerializeField]
-    private float sapPerSecondPerGrowth = 9f;
+    private float sapPerSecondPerGrowth = 2.5f;
 
 
     public float previewCost = 0;
@@ -94,18 +96,21 @@ public class GameManager : MonoBehaviour
     private DefenseUpgradeVisual_Script defenseUpgrade;
 
 
-    [Header("Lose UI")]
+    [Header("UI")]
     [SerializeField]
-    private GameObject loseUI;
-
-
-    [Header("Debug")]
-    [SerializeField, Range(1, 100)]
-    private float debugTime = 1f;
-
-
-    [Header("Win/Lose Condition")]
+    private GameObject uiLose;
+    [SerializeField]
+    private GameObject uiPause;
+    [SerializeField]
+    private GameObject uiWin;
     private bool lose = false;
+    private bool pause = false;
+    private bool win = false;
+    [SerializeField]
+    private GameObject uiTowerDefense;
+
+
+
 
 
     private void Awake() {
@@ -120,6 +125,11 @@ public class GameManager : MonoBehaviour
         growthVisual.SetGrowth(timeElapsedSinceStart, timeBeforeFullGrown,true);
         defenses = new GameObject[defensePoints.Length];
         defenseUpgrade.InitIcons(defensePoints.Length);
+
+        uiLose.SetActive(false);
+        uiWin.SetActive(false);
+        uiPause.SetActive(false);
+        Time.timeScale = 1;
     }
 
     public bool CanBuy(float sapCost) {
@@ -171,7 +181,31 @@ public class GameManager : MonoBehaviour
 
     private void Lose() {
         lose = true;
-        loseUI.SetActive(true);
+        uiLose.SetActive(true);
+
+        sapBasePerSecond = 0;
+        sapPerSecondPerGrowth = 0;
+
+        
+        foreach (Enemy_Script enemy in enemies) {
+            Destroy(enemy.gameObject);
+        }
+        enemies.Clear();
+    }
+    private void PauseUnPause() {
+        pause = !pause;
+        uiPause.SetActive(pause);
+        Time.timeScale = pause ? 0 : 1;
+    }
+
+    private void Win() {
+        win = true;
+        uiWin.SetActive(true);
+        
+        foreach (Enemy_Script enemy in enemies) {
+            Destroy(enemy.gameObject);
+        }
+        enemies.Clear();
     }
     public void Attacked(float value) {
         currentSap -= value;
@@ -180,17 +214,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void ActualizeTree(float deltaTime) {
-        float treeGrowthPercent = Mathf.InverseLerp(timeBeforeSapling, timeBeforeFullGrown, timeElapsedSinceStart);
-        tree.SetSize(treeGrowthPercent);
-
+    private void ActualizeSap(float deltaTime) {
         //Sap Gain
+        sapPerSecond = sapBasePerSecond + currentGrowth * sapPerSecondPerGrowth;
         currentSap += sapPerSecond * deltaTime;
+
         if (currentSap > maxSap) {
             currentSap = maxSap;
         }
         sapVisual.ChangeValue(currentSap, maxSap);
         sapVisual.PreviewCost(previewCost, maxSap, currentSap >= previewCost);
+    }
+    private void ActualizeTree(float deltaTime) {
+        float treeGrowthPercent = Mathf.InverseLerp(timeBeforeSapling, timeBeforeFullGrown, timeElapsedSinceStart);
+        tree.SetSize(treeGrowthPercent);
     }
     private void ActualizeState() {
         switch (actualState) {
@@ -215,6 +252,8 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case GameState.FullGrown:
+                Win();
+                break;
             default:
                 break;
         }
@@ -240,11 +279,9 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Time.timeScale = debugTime;
-
-        if(hydratationActual >= hydratationNeededActual) {
-            timeElapsedSinceStart += Time.deltaTime;
-            currentGrowth = timeElapsedSinceStart / timeBeforeFullGrown;
+        //Pause Control
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            PauseUnPause();
         }
 
         // camera controls
@@ -263,6 +300,8 @@ public class GameManager : MonoBehaviour
 
             rootController.hasFocus = !overgroundCamera;
         }
+
+        uiTowerDefense.SetActive(overgroundCamera && !lose && !win);
         // if we are underground with the camera
         if (!overgroundCamera)
         {
@@ -272,16 +311,26 @@ public class GameManager : MonoBehaviour
             undergroundCameraTarget.transform.position += new Vector3(cameraSpeed*horizontalInput, cameraSpeed*verticalInput);
         }
 
+        ActualizeSap(Time.deltaTime);
+        //Hydratation Stuff
+        CalculateHydratation();
+
         if (lose) {
             return;
         }
+        if (win) return;
 
+
+
+        if (hydratationActual >= hydratationNeededActual) {
+            timeElapsedSinceStart += Time.deltaTime;
+            currentGrowth = timeElapsedSinceStart / timeBeforeFullGrown;
+        }
 
         //Show Growth
         growthVisual.SetGrowth(timeElapsedSinceStart, timeBeforeFullGrown,hydratationActual >= hydratationNeededActual);
+        
 
-        //Hydratation Stuff
-        CalculateHydratation();
 
         //State Managment
         ActualizeState();
@@ -302,6 +351,18 @@ public class GameManager : MonoBehaviour
                 timerBetweenEnemy = minimalTimeBetweenSpawn;
                 accelerationOfEnemySpawn = 0f;
             }
+        }
+    }
+
+    public void Continue() {
+        if (pause) {
+            PauseUnPause();
+        }
+        if (lose) {
+            uiLose.SetActive(false);
+        }
+        if (win) {
+            uiWin.SetActive(false);
         }
     }
 }
