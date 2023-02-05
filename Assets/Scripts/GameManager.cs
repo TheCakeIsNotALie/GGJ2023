@@ -44,7 +44,9 @@ public class GameManager : MonoBehaviour
     [Header("Sap attributes")]
     [SerializeField]
     SapVisual_Script sapVisual;
-    private float currentSap = 0f;
+
+    [SerializeField]
+    private float currentSap = 15f;
     [SerializeField]
     private float maxSap = 50f;
     [SerializeField]
