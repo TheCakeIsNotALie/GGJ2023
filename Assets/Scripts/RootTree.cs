@@ -1,11 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class RootTree : MonoBehaviour
 {
@@ -124,41 +119,41 @@ public class RootTree : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        if (Application.isPlaying)
-        {
-            DrawGizmo(main);
-        }
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    if (Application.isPlaying)
+    //    {
+    //        DrawGizmo(main);
+    //    }
+    //}
 
-    void DrawGizmo(RootNode node)
-    {
-        int count = 0;
-        var parentNode = node.Parent;
-        while(parentNode != null)
-        {
-            count++;
-            parentNode = parentNode.Parent;
-        }
-        if(node.Parent != null && node.Parent.Left == node)
-        {
-            Handles.Label(node.self.transform.position, count + "L" + node.ChildCount + "C");
-        }
-        if (node.Parent != null && node.Parent.Right == node)
-        {
-            Handles.Label(node.self.transform.position, count + "R" + node.ChildCount + "C");
-        }
+    //void DrawGizmo(RootNode node)
+    //{
+    //    int count = 0;
+    //    var parentNode = node.Parent;
+    //    while(parentNode != null)
+    //    {
+    //        count++;
+    //        parentNode = parentNode.Parent;
+    //    }
+    //    if(node.Parent != null && node.Parent.Left == node)
+    //    {
+    //        Handles.Label(node.self.transform.position, count + "L" + node.ChildCount + "C");
+    //    }
+    //    if (node.Parent != null && node.Parent.Right == node)
+    //    {
+    //        Handles.Label(node.self.transform.position, count + "R" + node.ChildCount + "C");
+    //    }
 
-        if(node.Right != null)
-        {
-            DrawGizmo(node.Right);
-        }
-        if(node.Left != null)
-        {
-            DrawGizmo(node.Left);
-        }
-    }
+    //    if(node.Right != null)
+    //    {
+    //        DrawGizmo(node.Right);
+    //    }
+    //    if(node.Left != null)
+    //    {
+    //        DrawGizmo(node.Left);
+    //    }
+    //}
 
     public void CheckForResourcesCollisions()
     {

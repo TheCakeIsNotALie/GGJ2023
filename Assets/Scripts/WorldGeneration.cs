@@ -143,6 +143,8 @@ public class WorldGeneration : MonoBehaviour
             wpb.segments = (int)Mathf.Max((wpb.width + wpb.height) * 2, 4);
 
             spawns.Add(new KeyValuePair<float, Vector3>(Mathf.Max(wpb.width, wpb.height) + margin, position));
+
+            GameManager.instance.hydratationMaxPossible += wpb.waterQuantity;
         }
     }
 
