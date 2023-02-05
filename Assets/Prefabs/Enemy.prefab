@@ -102,6 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stats: {fileID: 0}
   target: {fileID: 0}
+  damageDealt: {fileID: 8300000, guid: 69372220d6ecba84c83fb405642ee3d7, type: 3}
 --- !u!50 &5095572482371936810
 Rigidbody2D:
   serializedVersion: 4

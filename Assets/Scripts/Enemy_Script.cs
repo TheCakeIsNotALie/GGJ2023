@@ -17,6 +17,9 @@ public class Enemy_Script : MonoBehaviour
     [SerializeField]
     private GameManager target;
 
+    [SerializeField]
+    private AudioClip damageDealt;
+
     private EnemyState state = EnemyState.WaitingOrder;
     public EnemyState State { get => state; }
 
@@ -106,6 +109,7 @@ public class Enemy_Script : MonoBehaviour
             case EnemyState.Attacking:
                 attackDelay -= Time.deltaTime;
                 if(attackDelay <= 0) {
+                    SoundManager.instance.PlaySound(damageDealt);
                     target.Attacked(stats.damage);
                     attackDelay = stats.timeBetweenAttacks;
                 }
