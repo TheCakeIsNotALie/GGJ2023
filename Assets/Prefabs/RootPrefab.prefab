@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1366810623717152845}
   - component: {fileID: 1366810623717152844}
   - component: {fileID: 7020874322511262366}
+  - component: {fileID: 592840335036158756}
   m_Layer: 0
   m_Name: RootPrefab
   m_TagString: Roots
@@ -165,3 +166,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationDuration: 2.5
+--- !u!114 &592840335036158756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366810623717152883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aaac4710e21ca040be08052de4ca209, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clip: {fileID: 8300000, guid: 4794d2f7edcf7624b9fabaec9bc9049f, type: 3}

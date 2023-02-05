@@ -214,7 +214,7 @@ public class RootController : MonoBehaviour
         {
             normalDistance = Vector3.Distance(previewStartPoint.Value, mouseWorldPosition);
         }
-        print("normal : " + normalDistance + ", gravel : " + gravelDistance);
+        //print("normal : " + normalDistance + ", gravel : " + gravelDistance);
         return normalDistance * pricePerMeter + gravelDistance * gravelPricePerMeter;
     }
 }

@@ -11,7 +11,7 @@ public class GravelPatchBehaviour : MonoBehaviour
     {
         var ssc = GetComponent<SpriteShapeController>();
         ssc.spline.Clear();
-        for(int i = 0; i < path.Count;i++)
+        for (int i = 0; i < path.Count; i++)
         {
             ssc.spline.InsertPointAt(i, path[i]);
         }
