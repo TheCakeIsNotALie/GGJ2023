@@ -7,6 +7,8 @@ using UnityEngine.UIElements;
 
 public class WorldGeneration : MonoBehaviour
 {
+    [SerializeField]
+    private Transform parent;
     [Header("Water Pockets")]
     public GameObject waterPocketPrefab;
     public float waterPocketPosMean;
@@ -123,7 +125,7 @@ public class WorldGeneration : MonoBehaviour
     {
         for (int i = 0; i < numberOfPockets; i++)
         {
-            var waterPocket = Instantiate(waterPocketPrefab);
+            var waterPocket = Instantiate(waterPocketPrefab,parent);
             waterPocketList.Add(waterPocket);
 
             Vector3 position = FindRandomPointNotClose(() =>
@@ -154,7 +156,7 @@ public class WorldGeneration : MonoBehaviour
         for (int i = 0; i < numberOfPatches; i++)
         {
             print("Generating " + i);
-            var gravelPatch = Instantiate(gravelPatchPrefab);
+            var gravelPatch = Instantiate(gravelPatchPrefab,parent);
 
             Vector3 position = FindRandomPointNotClose(() =>
             {

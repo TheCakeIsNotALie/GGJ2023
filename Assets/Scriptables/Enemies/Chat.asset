@@ -15,8 +15,8 @@ MonoBehaviour:
   spawnTime: 2
   name: Chat
   damage: 1
-  speed: 1
-  image: {fileID: -239842796, guid: e9d1f5585350e234392121a98a4b17be, type: 3}
+  speed: 4
+  image: {fileID: -1162130812, guid: 678e6d5e7ce27e04aa19f99f9b24fedf, type: 3}
   pv: 50
   timeBetweenAttacks: 0.5
   attackDistance: 2

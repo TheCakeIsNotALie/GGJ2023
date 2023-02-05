@@ -35,6 +35,11 @@ public class HydratationVisual_Script : MonoBehaviour
     public void SetValue(float value,float neededValue,float maxPossible) {
         textOutput.text = string.Format("Water\n{0}/{1}", Mathf.RoundToInt(value),Mathf.RoundToInt(maxPossible));
 
+        if (neededValue > maxPossible)
+            neededValue = maxPossible;
+        if (value > maxPossible)
+            value = maxPossible;
+
         bool positive = value > neededValue;
         float newHeight = maxHeight * (value/maxPossible);
         float newHeightNeeded = maxHeight*(neededValue/maxPossible);

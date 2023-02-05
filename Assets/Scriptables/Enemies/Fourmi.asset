@@ -15,7 +15,7 @@ MonoBehaviour:
   spawnTime: 1
   name: Fourmi
   damage: 0.1
-  speed: 0.25
+  speed: 1
   image: {fileID: -239842796, guid: e9d1f5585350e234392121a98a4b17be, type: 3}
   pv: 5
   timeBetweenAttacks: 0.2

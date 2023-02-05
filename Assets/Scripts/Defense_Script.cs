@@ -60,8 +60,9 @@ public class Defense_Script : MonoBehaviour
                 return;
             }
             foreach (Enemy_Script enemy in gm.enemies) {
-                print(defensesStats);
-                if (Vector2.Distance(enemy.transform.position,this.transform.position)<= defensesStats.fightRange && enemy.State != EnemyState.Dying) {
+                if (enemy == null || enemy.transform == null)
+                    continue;
+                if (Vector2.Distance(enemy.transform.position,this.transform.position) <= defensesStats.fightRange && enemy.State != EnemyState.Dying) {
                     target = enemy;
                     break;
                 }

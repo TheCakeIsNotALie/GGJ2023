@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c0df0060342e9a40a8167e5bc807465, type: 3}
-  m_Name: DefenseStats
+  m_Name: Omegatron
   m_EditorClassIdentifier: 
   icon: {fileID: 0}
   image: {fileID: 0}
@@ -19,6 +19,6 @@ MonoBehaviour:
   upgrade: {fileID: 0}
   damage: 469.24
   timeBetweenAttacks: -10
-  fightRange: 36.55
+  fightRange: 10.2
   projectileSpeed: 78.8
   projectileImage: {fileID: 21300000, guid: b76f6119b967d0844b2f6da8aa23faf9, type: 3}

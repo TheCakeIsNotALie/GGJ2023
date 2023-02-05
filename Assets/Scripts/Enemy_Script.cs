@@ -28,11 +28,14 @@ public class Enemy_Script : MonoBehaviour
     private float currentPv = 0f;
 
     private Rigidbody2D rb;
-
+    private SpriteRenderer sr;
+    
     public void SetEnemy(EnemyStats anEnemy) {
         stats = anEnemy;
         currentPv = anEnemy.pv;
-        GetComponent<SpriteRenderer>().sprite = stats.image;
+        
+        if(sr == null) sr = GetComponent<SpriteRenderer>();
+        sr.sprite = stats.image;
         hasEnemy = true;
     }
     public void SetTarget(GameManager aTarget) {
@@ -58,6 +61,7 @@ public class Enemy_Script : MonoBehaviour
 
     private void Start() {
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
         if(target != null && stats != null) {
             hasEnemy = true;
             hasTarget = true;
@@ -80,7 +84,7 @@ public class Enemy_Script : MonoBehaviour
                     speed.Normalize();
                     speed *= stats.speed;
                     rb.velocity = speed;
-
+                    sr.flipX = (rb.velocity.x > 0);
                     state = EnemyState.Moving;
                 } else {
                     rb.velocity = Vector2.zero;
@@ -89,13 +93,14 @@ public class Enemy_Script : MonoBehaviour
                 break;
             case EnemyState.Moving:
                 if (myPos.magnitude < stats.attackDistance) {
-                    rb.velocity = Vector2.zero;
+                    rb.velocity = Vector2.zero; 
                     state = EnemyState.Attacking;
                 } else {
                     Vector2 speed = target.transform.position - transform.position;
                     speed.Normalize();
                     speed *= stats.speed;
-                    rb.velocity = speed;
+                        rb.velocity = speed;
+                        sr.flipX = (rb.velocity.x > 0);
                 }
                 break;
             case EnemyState.Attacking:

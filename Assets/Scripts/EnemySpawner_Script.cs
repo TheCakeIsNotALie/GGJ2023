@@ -13,7 +13,7 @@ public class EnemySpawner_Script : MonoBehaviour
 
     [SerializeField]
     private GameObject enemyPrefab;
-
+    
     public Enemy_Script SpawnAnEnemy(GameManager gm,GameState actual) {
         List<EnemyStats> possible = new List<EnemyStats>();
         for (int i = 0; i < enemies.Length; i++) {
