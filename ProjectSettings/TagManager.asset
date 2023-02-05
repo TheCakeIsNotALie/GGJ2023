@@ -8,6 +8,7 @@ TagManager:
   - Roots
   - Enemy
   - Projectile
+  - WaterPocket
   layers:
   - Default
   - TransparentFX
@@ -15,8 +16,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - FogOfWar
+  - Camera
   - 
   - 
   - 

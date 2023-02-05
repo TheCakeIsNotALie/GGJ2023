@@ -13,7 +13,7 @@ public class GrowthVisual_Script : MonoBehaviour {
     private RectTransform growthValue;
     private RectTransform mine;
 
-    private void Start() {
+    private void Awake() {
         mine = GetComponent<RectTransform>();
     }
     public void SetGrowth(float current,float max) {

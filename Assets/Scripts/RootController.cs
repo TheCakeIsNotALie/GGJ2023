@@ -1,33 +1,49 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class RootController : MonoBehaviour
 {
-    public GameObject rootsContainer;
-    public GameObject rootPrefab;
-    public GameObject snapNodePrefab;
+    [Header("References")]
+    [SerializeField]
+    private GameManager gameManager;
+    [SerializeField]
+    private RootTree rootTree;
+    [SerializeField]
+    private GameObject snapNodePrefab;
+    [SerializeField]
+    private GameObject previewPlacementPrefab; 
+    [SerializeField]
+    private Color previewErrorColor = Color.red;
+
+    [Header("Placement")]
+    [SerializeField]
+    private float pricePerMeter = 2.5f;
+    public bool hasFocus = false;
+    [SerializeField]
+    private float snapRange = 1f;
+    [SerializeField]
+    private float zPosition = -1;
 
     private GameObject previewSnap;
-    private GameObject previewRoot;
-    private GameObject snapParentRoot;
-    private List<GameObject> rootSegments = new List<GameObject>();
-
-    public bool hasFocus = false;
-
-    public float snapRange = 0.75f;
-    public float zPosition = -1;
-    public float maxRootWidth = 1;
-
-    public float rootWidthGrowthPerMeter = 0.125f;
+    private GameObject previewPlacement;
+    [SerializeField]
+    private Color previewInitialColor = Color.white;
+    [SerializeField]
+    private float zPreviewPosition = -3;
+    private Color previewTextInitialColor = Color.white;
+    private RootTree.PointSearch snapPoint;
 
     private Vector3? previewStartPoint = null;
-    private Vector3? previewEndPoint = null;
     // Start is called before the first frame update
     void Start()
     {
-        previewRoot = Instantiate(rootPrefab, rootsContainer.transform);
-        previewRoot.SetActive(false);
+        previewPlacement = Instantiate(previewPlacementPrefab);
+        previewPlacement.SetActive(false);
+        LineRenderer lineRenderer = previewPlacement.GetComponent<LineRenderer>();
+        TextMeshPro textRenderer = previewPlacement.GetComponentInChildren<TextMeshPro>();
 
         previewSnap = Instantiate(snapNodePrefab);
         previewSnap.SetActive(false);
@@ -40,115 +56,102 @@ public class RootController : MonoBehaviour
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPos.z = zPosition;
+            
             if (previewStartPoint != null)
             {
-                previewEndPoint = mouseWorldPos;
-                LineRenderer rootRenderer = previewRoot.GetComponent<LineRenderer>();
+                LineRenderer lineRenderer = previewPlacement.GetComponent<LineRenderer>();
+                TextMeshPro textRenderer = previewPlacement.GetComponentInChildren<TextMeshPro>();
 
                 var points = new Vector3[2];
                 points[0] = previewStartPoint.Value;
-                points[1] = previewEndPoint.Value;
+                points[1] = Helpers.CopyV3(mouseWorldPos, zPreviewPosition);
 
-                var distance = Vector3.Distance(points[0], points[1]);
-                var widthStart = Mathf.Min(distance * rootWidthGrowthPerMeter, maxRootWidth);
-                var widthEnd = Mathf.Min(0, maxRootWidth);
-
-                rootRenderer.positionCount = 2;
-                rootRenderer.startWidth = widthStart;
-                rootRenderer.endWidth = widthEnd;
-                rootRenderer.SetPositions(points);
-                previewRoot.SetActive(true);
-            }
-
-            bool snapActivated = false;
-            Vector3 comparePoint = rootsContainer.transform.position;
-            // compare 2d only to avoid z offset errors
-            if (Vector2.Distance(comparePoint, mouseWorldPos) <= snapRange)
-            {
-                snapActivated = true;
-                previewSnap.transform.position = comparePoint;
-                previewSnap.SetActive(true);
-            }
-            else
-            {
-                float nearestDistance = snapRange;
-                Vector3? nearestPoint = null;
-                foreach (var item in rootSegments)
+                // check if the segment can be bought
+                var distance = Vector2.Distance(points[0], points[1]);
+                var price = distance * pricePerMeter;
+                textRenderer.text = "-" + price.ToString("0");
+                if (!gameManager.CanBuy(price))
                 {
-                    var lr = item.GetComponent<LineRenderer>();
-                    int positions = lr.positionCount;
-                    var p1 = lr.GetPosition(0);
-                    var p2 = lr.GetPosition(positions - 1);
-
-                    var nearest = MathHelper.NearestPointOnSegment(mouseWorldPos, p1, p2);
-                    var distance = Vector2.Distance(nearest, mouseWorldPos);
-                    if (distance < nearestDistance)
-                    {
-                        snapParentRoot = item;
-                        nearestPoint = nearest;
-                        nearestDistance = distance;
-                    }
-                }
-
-                if (nearestPoint != null)
-                {
-                    snapActivated = true;
-                    previewSnap.transform.position = nearestPoint.Value;
-                    previewSnap.SetActive(true);
-                }
-            }
-
-            if (!snapActivated)
-            {
-                previewSnap.SetActive(false);
-            }
-
-
-            if (Input.GetButtonDown("Click1") && previewSnap.activeSelf)
-            {
-                print("start point : " + previewStartPoint + ", snap active" + previewSnap.activeSelf);
-                if (previewStartPoint == null)
-                {
-                    previewStartPoint = previewSnap.transform.position;
+                    lineRenderer.startColor = previewErrorColor;
+                    lineRenderer.endColor = previewErrorColor;
+                    textRenderer.color = previewErrorColor;
                 }
                 else
                 {
-                    generateNewRootSegment();
+                    lineRenderer.startColor = previewInitialColor;
+                    lineRenderer.endColor = previewInitialColor;
+                    textRenderer.color = previewTextInitialColor;
                 }
+
+                lineRenderer.positionCount = 2;
+                lineRenderer.SetPositions(points);
+                previewPlacement.transform.position = previewStartPoint.Value;
+                previewPlacement.SetActive(true);
+            }
+            else
+            {
+                // only show snap point if the start point hasn't been selected yet
+                var snapCandidate = rootTree.ClosestPointOnTree(mouseWorldPos);
+                // compare 2d only to avoid z offset errors
+                if (snapCandidate.distance <= snapRange)
+                {
+                    snapPoint = snapCandidate;
+                    previewSnap.transform.position = Helpers.CopyV3(snapPoint.pointOnSegment, zPreviewPosition);
+                    previewSnap.SetActive(true);
+                }
+                else
+                {
+                    previewSnap.SetActive(false);
+                }
+
+                previewPlacement.SetActive(false);
+            }
+
+
+            if (Input.GetButtonDown("Click1"))
+            {
+                //print("start point : " + previewStartPoint == null + ", snap active" + previewSnap.activeSelf);
+                if (previewStartPoint == null && previewSnap.activeSelf)
+                {
+                    previewStartPoint = previewSnap.transform.position;
+                }
+                else if (previewStartPoint != null)
+                {
+                    generateNewRootSegment(
+                        snapPoint.parent,
+                        Helpers.CopyV3(previewStartPoint.Value,zPosition),
+                        Helpers.CopyV3(mouseWorldPos, zPosition),
+                        snapPoint.left
+                        );
+                }
+            }
+            //clear preview on right click
+            if (Input.GetButtonDown("Click2"))
+            {
+                snapPoint = null;
+                previewStartPoint = null;
             }
         }
     }
 
-    void generateNewRootSegment()
+    void generateNewRootSegment(RootTree.RootNode parent, Vector3 start, Vector3 end, bool left)
     {
-        var parent = snapParentRoot != null ? snapParentRoot.transform : rootsContainer.transform;
-        GameObject newRoot = Instantiate(rootPrefab, parent);
-        LineRenderer rootRenderer = newRoot.GetComponent<LineRenderer>();
+        print("Generating new segment");
 
-        var points = new Vector3[2];
-        points[0] = previewStartPoint.Value;
-        points[1] = previewEndPoint.Value;
-
-        var distance = Vector3.Distance(points[0], points[1]);
-        var widthStart = Mathf.Min(distance * rootWidthGrowthPerMeter, maxRootWidth);
-        var widthEnd = Mathf.Min(0, maxRootWidth);
-
-        rootRenderer.positionCount = 2;
-        rootRenderer.startWidth = widthStart;
-        rootRenderer.endWidth = widthEnd;
-        rootRenderer.SetPositions(points);
-
-        LineRenderer parentRootLR = parent.gameObject.GetComponent<LineRenderer>();
-
-        if (parentRootLR != null)
+        var distance = Vector2.Distance(start, end);
+        var price = distance * pricePerMeter;
+        if (!gameManager.Buy(price))
         {
-            parentRootLR.endWidth = widthStart;
+            print("Cannot create segment, aborting creation");
+            return;
         }
 
-        rootSegments.Add(newRoot);
+        var insertNode = new RootTree.RootNode(start, parent);
+        var endNode = new RootTree.RootNode(end, insertNode);
+        rootTree.InsertIntersection(insertNode, parent, left);
+        rootTree.InsertLeaf(endNode, insertNode);
 
         // clear preview inputs for next inputs
         previewStartPoint = null;
-        previewEndPoint = null;
     }
 }

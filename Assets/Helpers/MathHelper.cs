@@ -1,9 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class MathHelper 
 {
+    public static float RandomStdDev(float mean = 0, float stdDev = 1)
+    {
+        return mean + stdDev * Mathf.Sqrt(-2 * Mathf.Log(UnityEngine.Random.value)) * Mathf.Sin(2 * Mathf.PI * UnityEngine.Random.value);
+    }
+
     //linePnt - point the line passes through
     //lineDir - unit vector in direction of line, either direction works
     //pnt - the point to find nearest on line for

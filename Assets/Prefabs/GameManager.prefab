@@ -10,6 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8808482713354551028}
   - component: {fileID: 8808482713354551029}
+  - component: {fileID: 6281394462979165164}
+  - component: {fileID: 2834911152021555082}
+  - component: {fileID: 6318038958140876006}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -48,6 +51,7 @@ MonoBehaviour:
   timeBeforeYoungTree: 120
   timeBeforeOldTree: 300
   timeBeforeFullGrown: 500
+  growthVisual: {fileID: 0}
   sapVisual: {fileID: 0}
   maxSap: 50
   sapPerSecond: 1
@@ -56,7 +60,67 @@ MonoBehaviour:
   spawner: {fileID: 0}
   timerBetweenEnemy: 5
   timeRemainingBeforeNewEnemy: 30
+  accelerationOfEnemySpawn: 0.1
+  minimalTimeBetweenSpawn: 1
   enemies: []
   prefabDefense: {fileID: 0}
   defensePoints: []
   debugTime: 1
+--- !u!114 &6281394462979165164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8808482713354551026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6a21fcdb519548419c181a2451714a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snapNodePrefab: {fileID: 6132083296465062932, guid: 8da0bbb1283244141bd780c43e805716, type: 3}
+  previewPlacementPrefab: {fileID: 6686221370263821203, guid: f8d28ca8176350b4eacad0fbf2ae7ffd, type: 3}
+  hasFocus: 0
+  snapRange: 1
+  zPosition: -1
+--- !u!114 &2834911152021555082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8808482713354551026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ff8987079498044bb3996ae5398c76f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rootPrefab: {fileID: 1366810623717152883, guid: 5e585cd674b4c1140bea60b7473d967c, type: 3}
+  worldGenerationGameObject: {fileID: 8808482713354551026}
+  zPosition: -1
+  maxWidth: 1
+  rootWidthGrowthPerChild: 0.125
+--- !u!114 &6318038958140876006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8808482713354551026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a06a504213ed66a4aae12d5a49f3db13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waterPocketPrefab: {fileID: 1056417996044514528, guid: 92b5710a5fc03a244bed902105e5839e, type: 3}
+  numberOfPockets: 10
+  startingSize: 2.5
+  variation: 2
+  spawnZone:
+    serializedVersion: 2
+    x: -100
+    y: -600
+    width: 200
+    height: 600
+  zPosition: 0
+  waterPocketList: []
