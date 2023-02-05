@@ -19,15 +19,20 @@ public class RootController : MonoBehaviour
     private Color previewErrorColor = Color.red;
 
     [Header("Placement")]
+    [SerializeField]
     private float pricePerMeter = 2.5f;
     public bool hasFocus = false;
-    public float snapRange = 1f;
-    public float zPosition = -1;
+    [SerializeField]
+    private float snapRange = 1f;
+    [SerializeField]
+    private float zPosition = -1;
 
     private GameObject previewSnap;
     private GameObject previewPlacement;
     [SerializeField]
     private Color previewInitialColor = Color.white;
+    [SerializeField]
+    private float zPreviewPosition = -3;
     private Color previewTextInitialColor = Color.white;
     private RootTree.PointSearch snapPoint;
 
@@ -51,7 +56,7 @@ public class RootController : MonoBehaviour
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPos.z = zPosition;
-
+            
             if (previewStartPoint != null)
             {
                 LineRenderer lineRenderer = previewPlacement.GetComponent<LineRenderer>();
@@ -59,7 +64,7 @@ public class RootController : MonoBehaviour
 
                 var points = new Vector3[2];
                 points[0] = previewStartPoint.Value;
-                points[1] = mouseWorldPos;
+                points[1] = Helpers.CopyV3(mouseWorldPos, zPreviewPosition);
 
                 // check if the segment can be bought
                 var distance = Vector2.Distance(points[0], points[1]);
@@ -67,12 +72,14 @@ public class RootController : MonoBehaviour
                 textRenderer.text = "-" + price.ToString("0");
                 if (!gameManager.CanBuy(price))
                 {
-                    lineRenderer.SetColors(previewErrorColor, previewErrorColor);
+                    lineRenderer.startColor = previewErrorColor;
+                    lineRenderer.endColor = previewErrorColor;
                     textRenderer.color = previewErrorColor;
                 }
                 else
                 {
-                    lineRenderer.SetColors(previewInitialColor, previewInitialColor);
+                    lineRenderer.startColor = previewInitialColor;
+                    lineRenderer.endColor = previewInitialColor;
                     textRenderer.color = previewTextInitialColor;
                 }
 
@@ -89,7 +96,7 @@ public class RootController : MonoBehaviour
                 if (snapCandidate.distance <= snapRange)
                 {
                     snapPoint = snapCandidate;
-                    previewSnap.transform.position = snapPoint.pointOnSegment;
+                    previewSnap.transform.position = Helpers.CopyV3(snapPoint.pointOnSegment, zPreviewPosition);
                     previewSnap.SetActive(true);
                 }
                 else
@@ -110,7 +117,12 @@ public class RootController : MonoBehaviour
                 }
                 else if (previewStartPoint != null)
                 {
-                    generateNewRootSegment(snapPoint.parent, previewStartPoint.Value, mouseWorldPos, snapPoint.left);
+                    generateNewRootSegment(
+                        snapPoint.parent,
+                        Helpers.CopyV3(previewStartPoint.Value,zPosition),
+                        Helpers.CopyV3(mouseWorldPos, zPosition),
+                        snapPoint.left
+                        );
                 }
             }
             //clear preview on right click

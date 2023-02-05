@@ -90,22 +90,21 @@ public class RootTree : MonoBehaviour
     }
 
     public GameObject rootPrefab;
-    public GameObject worldGenerationGameObject;
+    [SerializeField]
+    private WorldGeneration worldGen;
     public float zPosition = -1;
     public float maxWidth = 1;
     public float rootWidthGrowthPerChild = 0.125f;
 
     private int previousHash = 0;
     public RootNode main;
-    private WorldGeneration worldGen;
+   
     private List<Collider2D> waterPocketColliders;
     public HashSet<WaterPocketBehavior> linkedWaterPockets = new HashSet<WaterPocketBehavior>();
 
     // Start is called before the first frame update
     void Start()
     {
-        worldGen = worldGenerationGameObject.GetComponent<WorldGeneration>();
-
         RootNode.rootPrefab = rootPrefab;
         main = new RootNode(new Vector3(0,0,zPosition));
         print(main);
@@ -147,11 +146,18 @@ public class RootTree : MonoBehaviour
 
         foreach (var hit in hits)
         {
-            var behaviour = hit.collider.gameObject.GetComponent<WaterPocketBehavior>();
-
-            if(behaviour != null)
+            print(hit.collider.gameObject);
+            var wpb = hit.collider.gameObject.GetComponent<WaterPocketBehavior>();
+            if(wpb != null)
             {
-                linkedWaterPockets.Add(behaviour);
+                linkedWaterPockets.Add(wpb);
+                continue;
+            }
+            var fowb = hit.collider.gameObject.GetComponent<FogOfWarBehavior>();
+            if(fowb != null)
+            {
+                print("Hit FOG");
+                fowb.Kill();
             }
         }
     }
