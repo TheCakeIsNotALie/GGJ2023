@@ -37,8 +37,4 @@ public class DefenseUpgradeVisual_Script : MonoBehaviour
         mesIconesCurrentementExistants[id].SetAssignedDefense(go);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
 }

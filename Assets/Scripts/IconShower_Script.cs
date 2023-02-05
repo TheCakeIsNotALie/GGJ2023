@@ -13,8 +13,6 @@ public class IconShower_Script : MonoBehaviour
     private TMPro.TextMeshProUGUI valueText;
 
     private DefenseStats defenseStat;
-    private void Start() {
-    }
     public void CanAfford(bool affordable) {
         filter.SetActive(!affordable || GameManager.instance.HasSpaceForDefense() == -1);
     }

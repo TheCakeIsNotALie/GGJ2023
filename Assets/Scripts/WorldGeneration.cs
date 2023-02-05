@@ -132,12 +132,14 @@ public class WorldGeneration : MonoBehaviour
             var normalizedDepth = 1 - (position.y - spawnZone.y) / spawnZone.height;
             var wpb = waterPocket.GetComponent<WaterPocketBehavior>();
             wpb.width = Mathf.Max(waterPocketMinSize, waterPocketMaxSize * waterPocketSizeCurve.Evaluate(normalizedDepth));
-            wpb.width *= Random.Range(-0.1f, 0.1f);
+            wpb.width += Random.Range(-0.1f, 0.1f);
             wpb.height = Mathf.Max(waterPocketMinSize, waterPocketMaxSize * waterPocketSizeCurve.Evaluate(normalizedDepth));
-            wpb.height *= Random.Range(-0.1f, 0.1f);
+            wpb.height += Random.Range(-0.1f, 0.1f);
             wpb.waterQuantity = wpb.width * wpb.height * waterDensity;
             wpb.angleOffset = Random.Range(0, Mathf.PI/2);
             wpb.segments = (int)Mathf.Max((wpb.width + wpb.height)*2, 4);
+
+            GameManager.instance.hydratationMaxPossible += wpb.waterQuantity;
 
             spawns.Add(new KeyValuePair<float, Vector3>(Mathf.Max(wpb.width, wpb.height) + 4, position));
         }

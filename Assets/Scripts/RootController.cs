@@ -49,6 +49,10 @@ public class RootController : MonoBehaviour
         previewSnap.SetActive(false);
     }
 
+    public HashSet<WaterPocketBehavior> GetConnectedWaterPockets() {
+        return rootTree.linkedWaterPockets;
+    }
+
     // Update is called once per frame
     void Update()
     {
