@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3d1f46f193f47e54ab0f66821fff04b2
+guid: cb14571da1d1eeb408da9df873e14330
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -33,7 +33,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -44,10 +44,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 64
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -117,13 +117,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: squirrels_0
+      name: rock_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 23
-        height: 23
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +131,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 599367368130c3346b3d5e74c39c856b
-      internalID: 131893211
+      spriteID: 45d4d055ef7a9a141ab9f3fa9daac8f2
+      internalID: 1147775214
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: squirrels_1
+      name: rock_1
       rect:
         serializedVersion: 2
-        x: 25
+        x: 64
         y: 0
-        width: 30
-        height: 36
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -152,20 +152,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1064f2d073f1d734abb1a47461211fdd
-      internalID: 330708798
+      spriteID: f623f83c73ce80147aaf65d18e9e3b8a
+      internalID: -1682234833
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: squirrels_2
+      name: rock_2
       rect:
         serializedVersion: 2
-        x: 61
+        x: 128
         y: 0
-        width: 38
-        height: 25
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -173,20 +173,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0773feafc77ea62489a0a46102cd3b2d
-      internalID: 1077603540
+      spriteID: 088be3bbeb4666e4faf6be44aad28d70
+      internalID: -240320289
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: squirrels_3
+      name: rock_3
       rect:
         serializedVersion: 2
-        x: 103
+        x: 192
         y: 0
-        width: 34
-        height: 25
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -194,20 +194,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a64914d9d73da514da039306b68bf3e3
-      internalID: -408632883
+      spriteID: 1ab922bcd1d29384993cfcf40bbcefab
+      internalID: 435631973
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: squirrels_4
+      name: rock_4
       rect:
         serializedVersion: 2
-        x: 142
+        x: 256
         y: 0
-        width: 30
-        height: 30
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -215,20 +215,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 367b4773e38be6944a700a72f494c3b5
-      internalID: 1248822402
+      spriteID: 741eba3171646b34d93606da16aa3a25
+      internalID: 1480057836
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: squirrels_5
+      name: rock_5
       rect:
         serializedVersion: 2
-        x: 173
+        x: 320
         y: 0
-        width: 28
-        height: 23
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -236,20 +236,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f5319018c5a28474193ec1aaacda736f
-      internalID: -1687673760
+      spriteID: ca3d352a0e374e846b4b4945d99e70cd
+      internalID: 753405391
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: squirrels_6
+      name: rock_6
       rect:
         serializedVersion: 2
-        x: 202
+        x: 384
         y: 0
-        width: 30
-        height: 35
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -257,8 +257,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 80c83055461d51342bd6c7c1f441091c
-      internalID: 1438567705
+      spriteID: 4aeff4f76c30cd04e84d6c78bd538bd4
+      internalID: -2027216049
       vertices: []
       indices: 
       edges: []
@@ -274,13 +274,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      squirrels_5: -1687673760
-      squirrels_2: 1077603540
-      squirrels_3: -408632883
-      squirrels_4: 1248822402
-      squirrels_6: 1438567705
-      squirrels_1: 330708798
-      squirrels_0: 131893211
+      rock_5: 753405391
+      rock_2: -240320289
+      rock_0: 1147775214
+      rock_1: -1682234833
+      rock_4: 1480057836
+      rock_6: -2027216049
+      rock_3: 435631973
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

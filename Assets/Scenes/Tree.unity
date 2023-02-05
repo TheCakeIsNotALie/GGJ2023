@@ -1351,7 +1351,7 @@ MonoBehaviour:
   m_Follow: {fileID: 926580826}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 12
+    OrthographicSize: 40
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -3989,8 +3989,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1426490303}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -7.6}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -7.6000004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5809,7 +5809,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7636805609798264721, guid: 71e0eb0df2ec24b46a5fdeb46e0b5123, type: 3}
       propertyPath: m_Volume
-      value: 0.061
+      value: 0.06
       objectReference: {fileID: 0}
     - target: {fileID: 7636805610809720632, guid: 71e0eb0df2ec24b46a5fdeb46e0b5123, type: 3}
       propertyPath: m_Name
@@ -6189,6 +6189,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1360443521}
     - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
+      propertyPath: maxSap
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
       propertyPath: uiLose
       value: 
       objectReference: {fileID: 908848888}
@@ -6204,6 +6208,10 @@ PrefabInstance:
       propertyPath: sapVisual
       value: 
       objectReference: {fileID: 1488837301}
+    - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
+      propertyPath: currentSap
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
       propertyPath: cameraSpeed
       value: 0.5
@@ -6238,7 +6246,7 @@ PrefabInstance:
       objectReference: {fileID: 959333704}
     - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
       propertyPath: hydratationBase
-      value: 300
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8808482713354551029, guid: 634b724c2c9b8884da45618756d205b6, type: 3}
       propertyPath: hydratationVisual
