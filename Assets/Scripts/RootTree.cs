@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static UnityEditor.Progress;
 
@@ -30,7 +32,6 @@ public class RootTree : MonoBehaviour
             set
             {
                 left = value;
-                UpdateChildCount();
             }
         }
         public RootNode Right
@@ -39,7 +40,6 @@ public class RootTree : MonoBehaviour
             set
             {
                 right = value;
-                UpdateChildCount();
             }
         }
         public int ChildCount { get => childCount; set => childCount = value; }
@@ -59,19 +59,18 @@ public class RootTree : MonoBehaviour
             this.Right = right;
         }
 
-        private void UpdateChildCount()
+        public void UpdateChildCount()
         {
-            if(parent != null)
-            {
-                this.parent.UpdateChildCount();
-            }
+            this.childCount = 0;
             if (left != null)
             {
-                this.childCount = left.ChildCount + 1;
+                left.UpdateChildCount();
+                this.childCount += left.ChildCount + 1;
             }
             if (right != null)
             {
-                this.childCount = right.ChildCount + 1;
+                right.UpdateChildCount();
+                this.childCount += right.ChildCount + 1;
             }
         }
         public override int GetHashCode()
@@ -93,12 +92,13 @@ public class RootTree : MonoBehaviour
     [SerializeField]
     private WorldGeneration worldGen;
     public float zPosition = -1;
+    public float minWidth = 0.1f;
     public float maxWidth = 1;
     public float rootWidthGrowthPerChild = 0.125f;
 
     private int previousHash = 0;
     public RootNode main;
-   
+
     private List<Collider2D> waterPocketColliders;
     public HashSet<WaterPocketBehaviour> linkedWaterPockets = new HashSet<WaterPocketBehaviour>();
 
@@ -106,7 +106,7 @@ public class RootTree : MonoBehaviour
     void Start()
     {
         RootNode.rootPrefab = rootPrefab;
-        main = new RootNode(new Vector3(0,0,zPosition));
+        main = new RootNode(new Vector3(0, 0, zPosition));
         UpdateNodeDisplay(main);
     }
 
@@ -118,8 +118,45 @@ public class RootTree : MonoBehaviour
         {
             previousHash = main.GetHashCode();
 
+            main.UpdateChildCount();
             UpdateNodeDisplay(main);
             CheckForResourcesCollisions();
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (Application.isPlaying)
+        {
+            DrawGizmo(main);
+        }
+    }
+
+    void DrawGizmo(RootNode node)
+    {
+        int count = 0;
+        var parentNode = node.Parent;
+        while(parentNode != null)
+        {
+            count++;
+            parentNode = parentNode.Parent;
+        }
+        if(node.Parent != null && node.Parent.Left == node)
+        {
+            Handles.Label(node.self.transform.position, count + "L" + node.ChildCount + "C");
+        }
+        if (node.Parent != null && node.Parent.Right == node)
+        {
+            Handles.Label(node.self.transform.position, count + "R" + node.ChildCount + "C");
+        }
+
+        if(node.Right != null)
+        {
+            DrawGizmo(node.Right);
+        }
+        if(node.Left != null)
+        {
+            DrawGizmo(node.Left);
         }
     }
 
@@ -146,13 +183,13 @@ public class RootTree : MonoBehaviour
         foreach (var hit in hits)
         {
             var wpb = hit.collider.gameObject.GetComponent<WaterPocketBehaviour>();
-            if(wpb != null)
+            if (wpb != null)
             {
                 linkedWaterPockets.Add(wpb);
                 continue;
             }
             var fowb = hit.collider.gameObject.GetComponent<FogOfWarBehaviour>();
-            if(fowb != null)
+            if (fowb != null)
             {
                 fowb.Kill();
             }
@@ -173,8 +210,8 @@ public class RootTree : MonoBehaviour
         points[1] = node.self.transform.position;
 
         var distance = Vector3.Distance(points[0], points[1]);
-        float widthStart = (node.ChildCount + 1) * rootWidthGrowthPerChild;
-        float widthEnd = node.ChildCount * rootWidthGrowthPerChild;
+        float widthStart = Mathf.Clamp((node.ChildCount + 1) * rootWidthGrowthPerChild, minWidth, maxWidth);
+        float widthEnd = Mathf.Clamp(node.ChildCount * rootWidthGrowthPerChild, minWidth, maxWidth);
 
         lr.positionCount = 2;
         lr.startWidth = widthStart;
@@ -191,22 +228,28 @@ public class RootTree : MonoBehaviour
         }
     }
 
-    public void InsertIntersection(RootNode insert, RootNode parent, bool left = true)
+    public void InsertIntersection(RootNode insert, RootNode before, RootNode after)
     {
-        if (left)
+        if (before.Left == after)
         {
-            insert.Left = parent.Left;
-            insert.Parent = parent;
-            parent.Left = insert;
+            insert.Left = before.Left;
+            before.Left = insert;
+            insert.Parent = before;
+            if (insert.Left != null)
+            {
+                insert.Left.Parent = insert;
+            }
         }
         else
         {
-            insert.Right = parent.Right;
-            insert.Parent = parent;
-            parent.Right = insert;
+            insert.Right = before.Right;
+            before.Right = insert;
+            insert.Parent = before;
+            if (insert.Right != null)
+            {
+                insert.Right.Parent = insert;
+            }
         }
-        UpdateNodeDisplay(insert);
-        UpdateNodeDisplay(parent);
     }
 
     public void InsertLeaf(RootNode insert, RootNode parent)
@@ -233,14 +276,16 @@ public class RootTree : MonoBehaviour
 
     public class PointSearch
     {
-        public RootNode parent;
+        public RootNode before;
+        public RootNode after;
         public bool left;
         public float distance;
         public Vector3 pointOnSegment;
 
-        public PointSearch(RootNode parent, bool left, float distance, Vector3 pointOnSegment)
+        public PointSearch(RootNode before, RootNode after, bool left, float distance, Vector3 pointOnSegment)
         {
-            this.parent = parent;
+            this.before = before;
+            this.after = after;
             this.left = left;
             this.distance = distance;
             this.pointOnSegment = pointOnSegment;
@@ -266,7 +311,7 @@ public class RootTree : MonoBehaviour
         var end = node.self.transform.position;
         var nearestPointOnSegment = MathHelper.NearestPointOnSegment(point, start, end);
 
-        returnValue = new PointSearch(parentNode, true, Vector2.Distance(point, nearestPointOnSegment), nearestPointOnSegment);
+        returnValue = new PointSearch(parentNode, node, true, Vector2.Distance(point, nearestPointOnSegment), nearestPointOnSegment);
 
         if (node.Left != null)
         {

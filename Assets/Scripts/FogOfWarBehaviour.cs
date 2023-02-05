@@ -30,6 +30,7 @@ public class FogOfWarBehaviour : MonoBehaviour
     {
         falling = true;
         fallSpeed = new Vector2(Random.Range(-5,5), Random.Range(-10,0));
+        this.transform.position -= new Vector3(0, 0, 1);
         Destroy(this.gameObject, 5.0f);
     }
 }

@@ -53,6 +53,10 @@ public class RootController : MonoBehaviour
         previewSnap.SetActive(false);
     }
 
+    public HashSet<WaterPocketBehaviour> GetConnectedWaterPockets() {
+        return rootTree.linkedWaterPockets;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -123,7 +127,8 @@ public class RootController : MonoBehaviour
                 else if (previewStartPoint != null)
                 {
                     GenerateNewRootSegment(
-                        snapPoint.parent,
+                        snapPoint.before,
+                        snapPoint.after,
                         Helpers.CopyV3(previewStartPoint.Value, zPosition),
                         Helpers.CopyV3(mouseWorldPos, zPosition),
                         snapPoint.left
@@ -139,7 +144,7 @@ public class RootController : MonoBehaviour
         }
     }
 
-    void GenerateNewRootSegment(RootTree.RootNode parent, Vector3 start, Vector3 end, bool left)
+    void GenerateNewRootSegment(RootTree.RootNode before, RootTree.RootNode after, Vector3 start, Vector3 end, bool left)
     {
         print("Generating new segment");
 
@@ -150,9 +155,9 @@ public class RootController : MonoBehaviour
             return;
         }
 
-        var insertNode = new RootTree.RootNode(start, parent);
+        var insertNode = new RootTree.RootNode(start, before);
         var endNode = new RootTree.RootNode(end, insertNode);
-        rootTree.InsertIntersection(insertNode, parent, left);
+        rootTree.InsertIntersection(insertNode, before, after);
         rootTree.InsertLeaf(endNode, insertNode);
 
         // clear preview inputs for next inputs

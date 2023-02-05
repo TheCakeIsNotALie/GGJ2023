@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private float timeBeforeFullGrown = 500f;
 
+    private float currentGrowth = 0f;
+
 
     [SerializeField]
     private GrowthVisual_Script growthVisual;
@@ -47,12 +49,24 @@ public class GameManager : MonoBehaviour
     private float maxSap = 50f;
     [SerializeField]
     private float sapPerSecond = 1f;
+    [SerializeField]
+    private float sapPerSecondPerGrowth = 9f;
 
-    public float nextCost = 0;
+
+    public float previewCost = 0;
 
     [Header("Tree Settings")]
     [SerializeField]
     Tree_Script tree;
+    [SerializeField]
+    private float hydratationMaxNeededPercent = 0.7f;
+    [SerializeField]
+    private float hydratationBase = 0.1f;
+    private float hydratationActual = 0.1f;
+    private float hydratationNeededActual = 0f;
+    public float hydratationMaxPossible = 0f;
+    [SerializeField]
+    private HydratationVisual_Script hydratationVisual;
 
     [Header("Enemy Settings")]
     [SerializeField]
@@ -65,7 +79,7 @@ public class GameManager : MonoBehaviour
     private float accelerationOfEnemySpawn = 0.1f;
     [SerializeField]
     private float minimalTimeBetweenSpawn = 1f;
-    public List<Enemy_Script> enemies = new List<Enemy_Script>();
+    public List<Enemy_Script> enemies = new();
 
 
 
@@ -78,6 +92,11 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private DefenseUpgradeVisual_Script defenseUpgrade;
+
+
+    [Header("Lose UI")]
+    [SerializeField]
+    private GameObject loseUI;
 
 
     [Header("Debug")]
@@ -98,7 +117,7 @@ public class GameManager : MonoBehaviour
 
     void Start() {
         growthVisual.SetTicks(timeBeforeSapling, timeBeforeYoungTree, timeBeforeOldTree, timeBeforeFullGrown);
-        growthVisual.SetGrowth(timeElapsedSinceStart, timeBeforeFullGrown);
+        growthVisual.SetGrowth(timeElapsedSinceStart, timeBeforeFullGrown,true);
         defenses = new GameObject[defensePoints.Length];
         defenseUpgrade.InitIcons(defensePoints.Length);
     }
@@ -151,7 +170,8 @@ public class GameManager : MonoBehaviour
     }
 
     private void Lose() {
-        //lose = true;
+        lose = true;
+        loseUI.SetActive(true);
     }
     public void Attacked(float value) {
         currentSap -= value;
@@ -159,9 +179,6 @@ public class GameManager : MonoBehaviour
             Lose();
         }
     }
-
-
-
 
     private void ActualizeTree(float deltaTime) {
         float treeGrowthPercent = Mathf.InverseLerp(timeBeforeSapling, timeBeforeFullGrown, timeElapsedSinceStart);
@@ -173,7 +190,7 @@ public class GameManager : MonoBehaviour
             currentSap = maxSap;
         }
         sapVisual.ChangeValue(currentSap, maxSap);
-        sapVisual.PreviewCost(nextCost, maxSap, currentSap >= nextCost);
+        sapVisual.PreviewCost(previewCost, maxSap, currentSap >= previewCost);
     }
     private void ActualizeState() {
         switch (actualState) {
@@ -202,15 +219,36 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
+
+    private void CalculateHydratation() {
+        hydratationNeededActual = hydratationMaxNeededPercent * currentGrowth * hydratationMaxPossible;
+
+        hydratationActual = hydratationBase;
+        HashSet<WaterPocketBehaviour> connectedWaterPockets =  rootController.GetConnectedWaterPockets();
+        WorldGeneration wg = GetComponent<WorldGeneration>();
+        List<GameObject> waterPockets = wg.waterPocketList;
+        foreach (GameObject go in waterPockets) {
+            WaterPocketBehaviour WaterPocketBehaviour = go.GetComponent<WaterPocketBehaviour>();
+            if (connectedWaterPockets.Contains(WaterPocketBehaviour)) {
+                hydratationActual += WaterPocketBehaviour.waterQuantity;
+            }
+        }
+
+        hydratationVisual.SetValue(hydratationActual, hydratationNeededActual,hydratationMaxPossible);
+
+    }
     // Update is called once per frame
     void Update()
     {
         Time.timeScale = debugTime;
 
-        timeElapsedSinceStart += Time.deltaTime;
+        if(hydratationActual >= hydratationNeededActual) {
+            timeElapsedSinceStart += Time.deltaTime;
+            currentGrowth = timeElapsedSinceStart / timeBeforeFullGrown;
+        }
 
         // camera controls
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             // switch state between over and under ground
             overgroundCamera = !overgroundCamera;
@@ -238,8 +276,12 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+
         //Show Growth
-        growthVisual.SetGrowth(timeElapsedSinceStart, timeBeforeFullGrown);
+        growthVisual.SetGrowth(timeElapsedSinceStart, timeBeforeFullGrown,hydratationActual >= hydratationNeededActual);
+
+        //Hydratation Stuff
+        CalculateHydratation();
 
         //State Managment
         ActualizeState();
